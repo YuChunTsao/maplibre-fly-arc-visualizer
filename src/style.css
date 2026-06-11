@@ -235,3 +235,8 @@ html, body {
 .param-input::-webkit-outer-spin-button {
   -webkit-appearance: none;
 }
+
+.coord-input[type=number],
+.param-input[type=number] {
+  -moz-appearance: textfield;
+}

@@ -1,6 +1,7 @@
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './style.css';
 import { SCENARIOS } from './scenarios';
+import type { Scenario } from './scenarios';
 import { DEFAULT_PARAMS, cloneParams } from './params';
 import type { GlobalParams } from './params';
 import { createMap, runScenario, applyProjection } from './map-controller';
@@ -29,27 +30,7 @@ const {
   onScenarioSelect(id) {
     if (isAnimating) return;
     const scenario = SCENARIOS.find(s => s.id === id);
-    if (!scenario) return;
-
-    setActiveScenario(id);
-    const minZoomLine = scenario.minZoomKind === 'none' ? null : globalParams.minZoom;
-    chart.startRecording(minZoomLine);
-    setStatus('Running…');
-    isAnimating = true;
-    setAnimating(true);
-
-    runScenario(
-      map,
-      scenario,
-      globalParams,
-      (zoom, t) => chart.addSample(zoom, t),
-      () => {
-        isAnimating = false;
-        setAnimating(false);
-        chart.stopRecording();
-        setStatus('Complete');
-      },
-    );
+    if (scenario) startScenario(scenario);
   },
 
   onProjectionToggle(p) {
@@ -66,25 +47,16 @@ const {
 const map = createMap(mapContainer.id);
 const chart = new ZoomChart(chartCanvas);
 
-map.once('load', () => {
-  if (pendingProjection) {
-    applyProjection(map, pendingProjection);
-    pendingProjection = null;
-  }
-
-  // Auto-run scenario 1
-  const first = SCENARIOS[0];
-  if (!first) return;
-  setActiveScenario(first.id);
-  const minZoomLine = first.minZoomKind === 'none' ? null : globalParams.minZoom;
+function startScenario(scenario: Scenario): void {
+  setActiveScenario(scenario.id);
+  const minZoomLine = scenario.minZoomKind === 'none' ? null : globalParams.minZoom;
   chart.startRecording(minZoomLine);
   setStatus('Running…');
   isAnimating = true;
   setAnimating(true);
-
   runScenario(
     map,
-    first,
+    scenario,
     globalParams,
     (zoom, t) => chart.addSample(zoom, t),
     () => {
@@ -94,4 +66,14 @@ map.once('load', () => {
       setStatus('Complete');
     },
   );
+}
+
+map.once('load', () => {
+  if (pendingProjection) {
+    applyProjection(map, pendingProjection);
+    pendingProjection = null;
+  }
+
+  const first = SCENARIOS[0];
+  if (first) startScenario(first);
 });
