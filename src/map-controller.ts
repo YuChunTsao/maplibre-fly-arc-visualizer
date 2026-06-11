@@ -1,6 +1,7 @@
 import * as maplibregl from 'maplibre-gl';
 import type { FlyToOptions, Map as MapLibreMap } from 'maplibre-gl';
 import type { Scenario } from './scenarios';
+import type { GlobalParams } from './params';
 
 let activeSetMinZoom: number | null = null;
 
@@ -16,26 +17,28 @@ export function createMap(containerId: string): MapLibreMap {
 export function runScenario(
   map: MapLibreMap,
   scenario: Scenario,
+  params: GlobalParams,
   onZoomSample: (zoom: number, t: number) => void,
   onAnimationEnd: () => void,
 ): void {
   map.stop();
 
-  // Clear any setMinZoom left by a previous scenario before starting the new one.
   if (activeSetMinZoom !== null) {
     map.setMinZoom(null);
     activeSetMinZoom = null;
   }
 
-  map.jumpTo({ center: scenario.from.center, zoom: scenario.from.zoom });
+  const fromZoom = params.from.zoom ?? map.getZoom();
+  const toZoom   = params.to.zoom   ?? map.getZoom();
+
+  map.jumpTo({ center: params.from.center, zoom: fromZoom });
 
   const startTime = Date.now();
   const moveHandler = () => onZoomSample(map.getZoom(), Date.now() - startTime);
 
   const endHandler = () => {
     map.off('move', moveHandler);
-    // Restore unrestricted navigation after animation so UI controls work normally.
-    if (scenario.minZoomSource.kind === 'set-min-zoom') {
+    if (scenario.minZoomKind === 'set-min-zoom') {
       map.setMinZoom(null);
       activeSetMinZoom = null;
     }
@@ -46,18 +49,18 @@ export function runScenario(
   map.once('moveend', endHandler);
 
   const flyToOpts: FlyToOptions = {
-    center: scenario.to.center,
-    zoom: scenario.to.zoom,
-    curve: scenario.curve,
-    speed: scenario.speed,
+    center:    params.to.center,
+    zoom:      toZoom,
+    curve:     params.curve,
+    speed:     params.speed,
     essential: true,
   };
 
-  if (scenario.minZoomSource.kind === 'flyto-option') {
-    flyToOpts.minZoom = scenario.minZoomSource.minZoom;
-  } else if (scenario.minZoomSource.kind === 'set-min-zoom') {
-    map.setMinZoom(scenario.minZoomSource.minZoom);
-    activeSetMinZoom = scenario.minZoomSource.minZoom;
+  if (scenario.minZoomKind === 'flyto-option') {
+    flyToOpts.minZoom = params.minZoom;
+  } else if (scenario.minZoomKind === 'set-min-zoom') {
+    map.setMinZoom(params.minZoom);
+    activeSetMinZoom = params.minZoom;
   }
 
   map.flyTo(flyToOpts);
