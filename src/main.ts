@@ -15,34 +15,28 @@ let globalParams: GlobalParams = cloneParams(DEFAULT_PARAMS);
 const appEl = document.getElementById('app');
 if (!appEl) throw new Error('Missing #app');
 
-const {
-  mapContainer,
-  chartCanvas,
-  setActiveScenario,
-  setStatus,
-  setUIProjection,
-  setAnimating,
-} = buildUI(appEl, SCENARIOS, globalParams, {
-  onParamsChange(params) {
-    globalParams = params;
-  },
+const { mapContainer, chartCanvas, setActiveScenario, setStatus, setUIProjection, setAnimating } =
+  buildUI(appEl, SCENARIOS, globalParams, {
+    onParamsChange(params) {
+      globalParams = params;
+    },
 
-  onScenarioSelect(id) {
-    if (isAnimating) return;
-    const scenario = SCENARIOS.find(s => s.id === id);
-    if (scenario) startScenario(scenario);
-  },
+    onScenarioSelect(id) {
+      if (isAnimating) return;
+      const scenario = SCENARIOS.find((s) => s.id === id);
+      if (scenario) startScenario(scenario);
+    },
 
-  onProjectionToggle(p) {
-    if (isAnimating) return;
-    setUIProjection(p);
-    if (map.isStyleLoaded()) {
-      applyProjection(map, p);
-    } else {
-      pendingProjection = p;
-    }
-  },
-});
+    onProjectionToggle(p) {
+      if (isAnimating) return;
+      setUIProjection(p);
+      if (map.isStyleLoaded()) {
+        applyProjection(map, p);
+      } else {
+        pendingProjection = p;
+      }
+    },
+  });
 
 const map = createMap(mapContainer.id);
 const chart = new ZoomChart(chartCanvas);
@@ -64,7 +58,7 @@ function startScenario(scenario: Scenario): void {
       setAnimating(false);
       chart.stopRecording();
       setStatus('Complete');
-    },
+    }
   );
 }
 
@@ -73,7 +67,4 @@ map.once('load', () => {
     applyProjection(map, pendingProjection);
     pendingProjection = null;
   }
-
-  const first = SCENARIOS[0];
-  if (first) startScenario(first);
 });

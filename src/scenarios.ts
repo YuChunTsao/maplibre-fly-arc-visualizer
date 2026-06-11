@@ -1,8 +1,8 @@
 export type MinZoomKind = 'none' | 'flyto-option' | 'set-min-zoom';
 
 export type Scenario = {
-  id:          number;
-  label:       string;
+  id: number;
+  label: string;
   description: string;
   minZoomKind: MinZoomKind;
 };

@@ -63,9 +63,7 @@ export class ZoomChart {
 
     if (cW <= 0 || cH <= 0) return;
 
-    const maxT = this.samples.length > 0
-      ? Math.max(...this.samples.map(s => s.t), 1000)
-      : 5000;
+    const maxT = this.samples.length > 0 ? Math.max(...this.samples.map((s) => s.t), 1000) : 5000;
 
     const toX = (t: number) => left + (t / maxT) * cW;
     const toY = (zoom: number) => top + (1 - (zoom - ZOOM_MIN) / (ZOOM_MAX - ZOOM_MIN)) * cH;

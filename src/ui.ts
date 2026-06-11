@@ -3,25 +3,25 @@ import type { GlobalParams } from './params';
 import { cloneParams } from './params';
 
 export type UICallbacks = {
-  onScenarioSelect:  (id: number) => void;
-  onProjectionToggle:(projection: 'mercator' | 'globe') => void;
-  onParamsChange:    (params: GlobalParams) => void;
+  onScenarioSelect: (id: number) => void;
+  onProjectionToggle: (projection: 'mercator' | 'globe') => void;
+  onParamsChange: (params: GlobalParams) => void;
 };
 
 export type UIControls = {
-  mapContainer:      HTMLElement;
-  chartCanvas:       HTMLCanvasElement;
+  mapContainer: HTMLElement;
+  chartCanvas: HTMLCanvasElement;
   setActiveScenario: (id: number) => void;
-  setStatus:         (msg: string) => void;
-  setUIProjection:   (p: 'mercator' | 'globe') => void;
-  setAnimating:      (animating: boolean) => void;
+  setStatus: (msg: string) => void;
+  setUIProjection: (p: 'mercator' | 'globe') => void;
+  setAnimating: (animating: boolean) => void;
 };
 
 export function buildUI(
   appEl: HTMLElement,
   scenarios: Scenario[],
   initialParams: GlobalParams,
-  callbacks: UICallbacks,
+  callbacks: UICallbacks
 ): UIControls {
   const panel = el('div', 'panel');
 
@@ -52,24 +52,69 @@ export function buildUI(
   // Note: MapLibre center is [lng, lat]; UI labels show Lat/Lng in natural order.
   panel.appendChild(sectionLabel('From'));
   const fromRow = el('div', 'coord-row');
-  fromRow.appendChild(coordField('Lat', params.from.center[1], v => { params.from.center[1] = v; notify(); }));
-  fromRow.appendChild(coordField('Lng', params.from.center[0], v => { params.from.center[0] = v; notify(); }));
+  fromRow.appendChild(
+    coordField('Lat', params.from.center[1], (v) => {
+      params.from.center[1] = v;
+      notify();
+    })
+  );
+  fromRow.appendChild(
+    coordField('Lng', params.from.center[0], (v) => {
+      params.from.center[0] = v;
+      notify();
+    })
+  );
   panel.appendChild(fromRow);
-  panel.appendChild(optParamRow('Zoom', params.from.zoom, v => { params.from.zoom = v; notify(); }));
+  panel.appendChild(
+    optParamRow('Zoom', params.from.zoom, (v) => {
+      params.from.zoom = v;
+      notify();
+    })
+  );
 
   // To section
   panel.appendChild(sectionLabel('To'));
   const toRow = el('div', 'coord-row');
-  toRow.appendChild(coordField('Lat', params.to.center[1], v => { params.to.center[1] = v; notify(); }));
-  toRow.appendChild(coordField('Lng', params.to.center[0], v => { params.to.center[0] = v; notify(); }));
+  toRow.appendChild(
+    coordField('Lat', params.to.center[1], (v) => {
+      params.to.center[1] = v;
+      notify();
+    })
+  );
+  toRow.appendChild(
+    coordField('Lng', params.to.center[0], (v) => {
+      params.to.center[0] = v;
+      notify();
+    })
+  );
   panel.appendChild(toRow);
-  panel.appendChild(optParamRow('Zoom', params.to.zoom, v => { params.to.zoom = v; notify(); }));
+  panel.appendChild(
+    optParamRow('Zoom', params.to.zoom, (v) => {
+      params.to.zoom = v;
+      notify();
+    })
+  );
 
   // Parameters section
   panel.appendChild(sectionLabel('Parameters'));
-  panel.appendChild(paramRow('minZoom', params.minZoom, v => { params.minZoom = v; notify(); }));
-  panel.appendChild(paramRow('curve',   params.curve,   v => { params.curve   = v; notify(); }));
-  panel.appendChild(paramRow('speed',   params.speed,   v => { params.speed   = v; notify(); }));
+  panel.appendChild(
+    paramRow('minZoom', params.minZoom, (v) => {
+      params.minZoom = v;
+      notify();
+    })
+  );
+  panel.appendChild(
+    paramRow('curve', params.curve, (v) => {
+      params.curve = v;
+      notify();
+    })
+  );
+  panel.appendChild(
+    paramRow('speed', params.speed, (v) => {
+      params.speed = v;
+      notify();
+    })
+  );
 
   // Scenario buttons
   panel.appendChild(sectionLabel('Scenarios'));
@@ -116,12 +161,17 @@ export function buildUI(
       for (const btn of scenBtns) {
         btn.classList.toggle('active', btn.dataset.id === String(id));
       }
-      const scenario = scenarios.find(s => s.id === id);
+      const scenario = scenarios.find((s) => s.id === id);
       if (scenario) descEl.textContent = scenario.description;
     },
-    setStatus(msg) { statusEl.textContent = msg; },
+    setStatus(msg) {
+      statusEl.textContent = msg;
+    },
     setUIProjection(p) {
-      for (const [key, btn] of Object.entries(projBtns) as ['mercator' | 'globe', HTMLButtonElement][]) {
+      for (const [key, btn] of Object.entries(projBtns) as [
+        'mercator' | 'globe',
+        HTMLButtonElement
+      ][]) {
         btn.classList.toggle('active', key === p);
       }
     },
@@ -185,7 +235,11 @@ function paramRow(label: string, initial: number, onChange: (v: number) => void)
 }
 
 /** Full-width label+input for an optional number (zoom). Empty string → null. */
-function optParamRow(label: string, initial: number | null, onChange: (v: number | null) => void): HTMLElement {
+function optParamRow(
+  label: string,
+  initial: number | null,
+  onChange: (v: number | null) => void
+): HTMLElement {
   const wrap = el('div', 'param-row');
   const lbl = el('span', 'param-label');
   lbl.textContent = label;
@@ -197,7 +251,10 @@ function optParamRow(label: string, initial: number | null, onChange: (v: number
   if (initial !== null) input.value = String(initial);
   input.addEventListener('change', () => {
     const raw = input.value.trim();
-    if (raw === '') { onChange(null); return; }
+    if (raw === '') {
+      onChange(null);
+      return;
+    }
     const v = parseFloat(raw);
     if (!isNaN(v)) onChange(v);
   });

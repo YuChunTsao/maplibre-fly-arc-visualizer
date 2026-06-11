@@ -19,7 +19,7 @@ export function runScenario(
   scenario: Scenario,
   params: GlobalParams,
   onZoomSample: (zoom: number, t: number) => void,
-  onAnimationEnd: () => void,
+  onAnimationEnd: () => void
 ): void {
   map.stop();
 
@@ -32,7 +32,7 @@ export function runScenario(
   map.jumpTo({ center: params.from.center, zoom: fromZoom });
   // jumpTo is synchronous: map.getZoom() now equals fromZoom.
   // So `params.to.zoom ?? map.getZoom()` means "same zoom as from" when unset.
-  const toZoom   = params.to.zoom   ?? map.getZoom();
+  const toZoom = params.to.zoom ?? map.getZoom();
 
   const startTime = Date.now();
   const moveHandler = () => onZoomSample(map.getZoom(), Date.now() - startTime);
@@ -50,10 +50,10 @@ export function runScenario(
   map.once('moveend', endHandler);
 
   const flyToOpts: FlyToOptions = {
-    center:    params.to.center,
-    zoom:      toZoom,
-    curve:     params.curve,
-    speed:     params.speed,
+    center: params.to.center,
+    zoom: toZoom,
+    curve: params.curve,
+    speed: params.speed,
     essential: true,
   };
 
@@ -67,9 +67,6 @@ export function runScenario(
   map.flyTo(flyToOpts);
 }
 
-export function applyProjection(
-  map: MapLibreMap,
-  projection: 'mercator' | 'globe',
-): void {
+export function applyProjection(map: MapLibreMap, projection: 'mercator' | 'globe'): void {
   map.setProjection({ type: projection });
 }
