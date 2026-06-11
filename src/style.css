@@ -88,42 +88,6 @@ body {
   cursor: not-allowed;
 }
 
-/* ── Scenario buttons ───────────────────────── */
-.scenario-list {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.scenario-btn {
-  width: 100%;
-  padding: 7px 10px;
-  border: 1px solid #30363d;
-  border-radius: 6px;
-  background: #21262d;
-  color: #c9d1d9;
-  cursor: pointer;
-  text-align: left;
-  font-size: 12px;
-  line-height: 1.4;
-  transition: background 0.15s, border-color 0.15s;
-}
-
-.scenario-btn:hover:not(:disabled) {
-  background: #30363d;
-}
-
-.scenario-btn.active {
-  background: #0f3b65;
-  border-color: #1f6feb;
-  color: #58a6ff;
-}
-
-.scenario-btn:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
 /* ── Description ────────────────────────────── */
 .description {
   font-size: 12px;

@@ -8,7 +8,7 @@ export class ZoomChart {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private samples: ZoomSample[] = [];
-  private minZoomLine: number | null = null;
+  private minZoomMarkers: Array<{ value: number | null; kind: 'flyto' | 'map' | 'none' }> = [];
   private recording = false;
   private observer: ResizeObserver;
 
@@ -20,9 +20,18 @@ export class ZoomChart {
     this.redraw();
   }
 
-  startRecording(minZoomLine: number | null): void {
+  startRecording(minZoom: number | null | { value: number | null; kind: 'flyto' | 'map' | 'none' } | Array<{ value: number | null; kind: 'flyto' | 'map' | 'none' }>): void {
     this.samples = [];
-    this.minZoomLine = minZoomLine;
+    // normalize legacy inputs to array of markers for compatibility
+    if (minZoom === null) {
+      this.minZoomMarkers = [];
+    } else if (typeof minZoom === 'number') {
+      this.minZoomMarkers = [{ value: minZoom, kind: 'map' }];
+    } else if (Array.isArray(minZoom)) {
+      this.minZoomMarkers = minZoom;
+    } else {
+      this.minZoomMarkers = [minZoom];
+    }
     this.recording = true;
     this.redraw();
   }
@@ -108,22 +117,41 @@ export class ZoomChart {
     ctx.fillText('zoom', 0, 0);
     ctx.restore();
 
-    // minZoom ceiling line
-    if (this.minZoomLine !== null) {
-      const y = toY(this.minZoomLine);
-      ctx.strokeStyle = '#f97316';
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([6, 4]);
-      ctx.beginPath();
-      ctx.moveTo(left, y);
-      ctx.lineTo(left + cW, y);
-      ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle = '#f97316';
-      ctx.font = '10px system-ui';
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'alphabetic';
-      ctx.fillText(`minZoom = ${this.minZoomLine}`, left + 4, y - 4);
+    // minZoom ceiling lines (support multiple markers — map and/or flyto)
+    if (this.minZoomMarkers && this.minZoomMarkers.length > 0) {
+      const mapColor = '#f97316'; // orange
+      const flytoColor = '#60a5fa'; // blue
+      let defaultLabelOffset = 0;
+      for (let i = 0; i < this.minZoomMarkers.length; i++) {
+        const marker = this.minZoomMarkers[i];
+        const labelPrefix = marker.kind === 'flyto' ? 'flyTo minZoom' : 'map minZoom';
+        const color = marker.kind === 'flyto' ? flytoColor : mapColor;
+        if (marker.value !== null) {
+          const y = toY(marker.value);
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([6, 4]);
+          ctx.beginPath();
+          ctx.moveTo(left, y);
+          ctx.lineTo(left + cW, y);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle = color;
+          ctx.font = '10px system-ui';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'alphabetic';
+          ctx.fillText(`${labelPrefix} = ${marker.value}`, left + 4, y - 4);
+        } else {
+          // value === null → user uses default; show label stacked at top
+          ctx.fillStyle = color;
+          ctx.font = '10px system-ui';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'alphabetic';
+          const y = top + 12 + defaultLabelOffset;
+          ctx.fillText(`${labelPrefix} = default`, left + 4, y);
+          defaultLabelOffset += 14; // stack subsequent default labels
+        }
+      }
     }
 
     // Zoom curve

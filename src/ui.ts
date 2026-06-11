@@ -1,9 +1,8 @@
-import type { Scenario } from './scenarios';
 import type { GlobalParams } from './params';
 import { cloneParams } from './params';
 
 export type UICallbacks = {
-  onScenarioSelect: (id: number) => void;
+  onRun: () => void;
   onProjectionToggle: (projection: 'mercator' | 'globe') => void;
   onParamsChange: (params: GlobalParams) => void;
 };
@@ -11,7 +10,6 @@ export type UICallbacks = {
 export type UIControls = {
   mapContainer: HTMLElement;
   chartCanvas: HTMLCanvasElement;
-  setActiveScenario: (id: number) => void;
   setStatus: (msg: string) => void;
   setUIProjection: (p: 'mercator' | 'globe') => void;
   setAnimating: (animating: boolean) => void;
@@ -19,7 +17,6 @@ export type UIControls = {
 
 export function buildUI(
   appEl: HTMLElement,
-  scenarios: Scenario[],
   initialParams: GlobalParams,
   callbacks: UICallbacks
 ): UIControls {
@@ -97,9 +94,16 @@ export function buildUI(
 
   // Parameters section
   panel.appendChild(sectionLabel('Parameters'));
+  // Independent minZooms (optional) — if null, use application/map default
   panel.appendChild(
-    paramRow('minZoom', params.minZoom, (v) => {
-      params.minZoom = v;
+    optParamRow('mapMinZoom', params.mapMinZoom, (v) => {
+      params.mapMinZoom = v;
+      notify();
+    })
+  );
+  panel.appendChild(
+    optParamRow('flyToMinZoom', params.flyToMinZoom, (v) => {
+      params.flyToMinZoom = v;
       notify();
     })
   );
@@ -116,25 +120,20 @@ export function buildUI(
     })
   );
 
-  // Scenario buttons
-  panel.appendChild(sectionLabel('Scenarios'));
-  const scenList = el('div', 'scenario-list');
-  const scenBtns: HTMLButtonElement[] = [];
-  for (const s of scenarios) {
-    const btn = document.createElement('button');
-    btn.className = 'scenario-btn';
-    btn.dataset.id = String(s.id);
-    btn.textContent = s.label;
-    btn.addEventListener('click', () => callbacks.onScenarioSelect(s.id));
-    scenBtns.push(btn);
-    scenList.appendChild(btn);
-  }
-  panel.appendChild(scenList);
+  // Run button
+  panel.appendChild(sectionLabel('Run'));
+  const runRow = el('div', 'run-row');
+  const runBtn = document.createElement('button');
+  runBtn.className = 'run-btn';
+  runBtn.textContent = 'Run';
+  runBtn.addEventListener('click', () => callbacks.onRun());
+  runRow.appendChild(runBtn);
+  panel.appendChild(runRow);
 
   // Description
   panel.appendChild(sectionLabel('Description'));
   const descEl = el('p', 'description');
-  descEl.textContent = scenarios[0]?.description ?? '';
+  descEl.textContent = 'Trigger flyTo using current parameters.';
   panel.appendChild(descEl);
 
   // Status
@@ -157,13 +156,6 @@ export function buildUI(
   return {
     mapContainer,
     chartCanvas,
-    setActiveScenario(id) {
-      for (const btn of scenBtns) {
-        btn.classList.toggle('active', btn.dataset.id === String(id));
-      }
-      const scenario = scenarios.find((s) => s.id === id);
-      if (scenario) descEl.textContent = scenario.description;
-    },
     setStatus(msg) {
       statusEl.textContent = msg;
     },
@@ -176,11 +168,12 @@ export function buildUI(
       }
     },
     setAnimating(animating) {
-      for (const btn of scenBtns) btn.disabled = animating;
+      runBtn.disabled = animating;
       for (const btn of Object.values(projBtns)) (btn as HTMLButtonElement).disabled = animating;
     },
   };
 }
+
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 

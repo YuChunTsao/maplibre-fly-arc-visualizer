@@ -1,12 +1,11 @@
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './style.css';
-import { SCENARIOS } from './scenarios';
-import type { Scenario } from './scenarios';
 import { DEFAULT_PARAMS, cloneParams } from './params';
 import type { GlobalParams } from './params';
 import { createMap, runScenario, applyProjection } from './map-controller';
 import { ZoomChart } from './chart';
 import { buildUI } from './ui';
+import { NavigationControl } from 'maplibre-gl';
 
 let isAnimating = false;
 let pendingProjection: 'mercator' | 'globe' | null = null;
@@ -15,16 +14,15 @@ let globalParams: GlobalParams = cloneParams(DEFAULT_PARAMS);
 const appEl = document.getElementById('app');
 if (!appEl) throw new Error('Missing #app');
 
-const { mapContainer, chartCanvas, setActiveScenario, setStatus, setUIProjection, setAnimating } =
-  buildUI(appEl, SCENARIOS, globalParams, {
+const { mapContainer, chartCanvas, setStatus, setUIProjection, setAnimating } =
+  buildUI(appEl, globalParams, {
     onParamsChange(params) {
       globalParams = params;
     },
 
-    onScenarioSelect(id) {
+    onRun() {
       if (isAnimating) return;
-      const scenario = SCENARIOS.find((s) => s.id === id);
-      if (scenario) startScenario(scenario);
+      startScenario();
     },
 
     onProjectionToggle(p) {
@@ -41,16 +39,22 @@ const { mapContainer, chartCanvas, setActiveScenario, setStatus, setUIProjection
 const map = createMap(mapContainer.id);
 const chart = new ZoomChart(chartCanvas);
 
-function startScenario(scenario: Scenario): void {
-  setActiveScenario(scenario.id);
-  const minZoomLine = scenario.minZoomKind === 'none' ? null : globalParams.minZoom;
-  chart.startRecording(minZoomLine);
+function startScenario(): void {
+  // Build an array of minZoom markers to pass to the chart (support both map and flyto simultaneously)
+  const markers: Array<{ value: number | null; kind: 'flyto' | 'map' | 'none' }> = [];
+  if (globalParams.mapMinZoom !== null && globalParams.mapMinZoom !== undefined) {
+    markers.push({ value: globalParams.mapMinZoom, kind: 'map' });
+  }
+  if (globalParams.flyToMinZoom !== null && globalParams.flyToMinZoom !== undefined) {
+    markers.push({ value: globalParams.flyToMinZoom, kind: 'flyto' });
+  }
+  // If no markers, pass an empty array (chart will show defaults when appropriate)
+  chart.startRecording(markers as any);
   setStatus('Running…');
   isAnimating = true;
   setAnimating(true);
   runScenario(
     map,
-    scenario,
     globalParams,
     (zoom, t) => chart.addSample(zoom, t),
     () => {
@@ -67,4 +71,6 @@ map.once('load', () => {
     applyProjection(map, pendingProjection);
     pendingProjection = null;
   }
+
+  map.addControl(new NavigationControl(), 'top-right');
 });

@@ -1,6 +1,5 @@
 import * as maplibregl from 'maplibre-gl';
 import type { FlyToOptions, Map as MapLibreMap } from 'maplibre-gl';
-import type { Scenario } from './scenarios';
 import type { GlobalParams } from './params';
 
 let activeSetMinZoom: number | null = null;
@@ -16,13 +15,13 @@ export function createMap(containerId: string): MapLibreMap {
 
 export function runScenario(
   map: MapLibreMap,
-  scenario: Scenario,
   params: GlobalParams,
   onZoomSample: (zoom: number, t: number) => void,
   onAnimationEnd: () => void
 ): void {
   map.stop();
 
+  // Clear any previously set minZoom
   if (activeSetMinZoom !== null) {
     map.setMinZoom(null);
     activeSetMinZoom = null;
@@ -39,7 +38,8 @@ export function runScenario(
 
   const endHandler = () => {
     map.off('move', moveHandler);
-    if (scenario.minZoomKind === 'set-min-zoom') {
+    // If we set a map minZoom for this run, clear it now.
+    if (activeSetMinZoom !== null) {
       map.setMinZoom(null);
       activeSetMinZoom = null;
     }
@@ -57,11 +57,15 @@ export function runScenario(
     essential: true,
   };
 
-  if (scenario.minZoomKind === 'flyto-option') {
-    flyToOpts.minZoom = params.minZoom;
-  } else if (scenario.minZoomKind === 'set-min-zoom') {
-    map.setMinZoom(params.minZoom);
-    activeSetMinZoom = params.minZoom;
+  // Apply user-selected options independently: flyTo minZoom and/or map minZoom.
+  if (params.flyToMinZoom !== null && params.flyToMinZoom !== undefined) {
+    flyToOpts.minZoom = params.flyToMinZoom;
+  }
+
+  if (params.mapMinZoom !== null && params.mapMinZoom !== undefined) {
+    const effective = params.mapMinZoom;
+    map.setMinZoom(effective);
+    activeSetMinZoom = effective;
   }
 
   map.flyTo(flyToOpts);
