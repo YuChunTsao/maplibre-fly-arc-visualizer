@@ -29,9 +29,8 @@ export function runScenario(
   }
 
   const fromZoom = params.from.zoom ?? map.getZoom();
-  const toZoom   = params.to.zoom   ?? map.getZoom();
-
   map.jumpTo({ center: params.from.center, zoom: fromZoom });
+  const toZoom   = params.to.zoom   ?? map.getZoom();
 
   const startTime = Date.now();
   const moveHandler = () => onZoomSample(map.getZoom(), Date.now() - startTime);
