@@ -30,6 +30,8 @@ export function runScenario(
 
   const fromZoom = params.from.zoom ?? map.getZoom();
   map.jumpTo({ center: params.from.center, zoom: fromZoom });
+  // jumpTo is synchronous: map.getZoom() now equals fromZoom.
+  // So `params.to.zoom ?? map.getZoom()` means "same zoom as from" when unset.
   const toZoom   = params.to.zoom   ?? map.getZoom();
 
   const startTime = Date.now();
