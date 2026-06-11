@@ -1,12 +1,15 @@
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './style.css';
 import { SCENARIOS } from './scenarios';
+import { DEFAULT_PARAMS, cloneParams } from './params';
+import type { GlobalParams } from './params';
 import { createMap, runScenario, applyProjection } from './map-controller';
 import { ZoomChart } from './chart';
 import { buildUI } from './ui';
 
 let isAnimating = false;
 let pendingProjection: 'mercator' | 'globe' | null = null;
+let globalParams: GlobalParams = cloneParams(DEFAULT_PARAMS);
 
 const appEl = document.getElementById('app');
 if (!appEl) throw new Error('Missing #app');
@@ -18,15 +21,18 @@ const {
   setStatus,
   setUIProjection,
   setAnimating,
-} = buildUI(appEl, SCENARIOS, {
+} = buildUI(appEl, SCENARIOS, globalParams, {
+  onParamsChange(params) {
+    globalParams = params;
+  },
+
   onScenarioSelect(id) {
     if (isAnimating) return;
     const scenario = SCENARIOS.find(s => s.id === id);
     if (!scenario) return;
 
     setActiveScenario(id);
-    const minZoomLine =
-      scenario.minZoomSource.kind === 'none' ? null : scenario.minZoomSource.minZoom;
+    const minZoomLine = scenario.minZoomKind === 'none' ? null : globalParams.minZoom;
     chart.startRecording(minZoomLine);
     setStatus('Running…');
     isAnimating = true;
@@ -35,6 +41,7 @@ const {
     runScenario(
       map,
       scenario,
+      globalParams,
       (zoom, t) => chart.addSample(zoom, t),
       () => {
         isAnimating = false;
@@ -69,7 +76,7 @@ map.once('load', () => {
   const first = SCENARIOS[0];
   if (!first) return;
   setActiveScenario(first.id);
-  const minZoomLine = first.minZoomSource.kind === 'none' ? null : first.minZoomSource.minZoom;
+  const minZoomLine = first.minZoomKind === 'none' ? null : globalParams.minZoom;
   chart.startRecording(minZoomLine);
   setStatus('Running…');
   isAnimating = true;
@@ -78,6 +85,7 @@ map.once('load', () => {
   runScenario(
     map,
     first,
+    globalParams,
     (zoom, t) => chart.addSample(zoom, t),
     () => {
       isAnimating = false;
