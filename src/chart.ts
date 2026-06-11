@@ -77,6 +77,9 @@ export class ZoomChart {
     const toX = (t: number) => left + (t / maxT) * cW;
     const toY = (zoom: number) => top + (1 - (zoom - ZOOM_MIN) / (ZOOM_MAX - ZOOM_MIN)) * cH;
 
+    const tickInterval =
+      maxT <= 3000 ? 500 : maxT <= 8000 ? 1000 : maxT <= 20000 ? 2000 : maxT <= 60000 ? 5000 : 10000;
+
     // Grid and axes
     ctx.strokeStyle = '#21262d';
     ctx.lineWidth = 1;
@@ -85,6 +88,13 @@ export class ZoomChart {
       ctx.beginPath();
       ctx.moveTo(left, y);
       ctx.lineTo(left + cW, y);
+      ctx.stroke();
+    }
+    for (let t = tickInterval; t <= maxT; t += tickInterval) {
+      const x = toX(t);
+      ctx.beginPath();
+      ctx.moveTo(x, top);
+      ctx.lineTo(x, top + cH);
       ctx.stroke();
     }
 
@@ -102,6 +112,24 @@ export class ZoomChart {
     ctx.textBaseline = 'middle';
     for (let z = ZOOM_MIN; z <= ZOOM_MAX; z += 2) {
       ctx.fillText(String(z), left - 6, toY(z));
+    }
+
+    // X-axis tick marks and labels
+    const axisBottom = top + cH;
+    ctx.strokeStyle = '#30363d';
+    ctx.lineWidth = 1;
+    ctx.fillStyle = '#6e7681';
+    ctx.font = '10px system-ui';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (let t = tickInterval; t <= maxT; t += tickInterval) {
+      const x = toX(t);
+      ctx.beginPath();
+      ctx.moveTo(x, axisBottom);
+      ctx.lineTo(x, axisBottom + 4);
+      ctx.stroke();
+      const seconds = t / 1000;
+      ctx.fillText(Number.isInteger(seconds) ? `${seconds}s` : `${seconds.toFixed(1)}s`, x, axisBottom + 6);
     }
 
     // Axis titles
