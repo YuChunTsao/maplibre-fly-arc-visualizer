@@ -1,26 +1,31 @@
 import type { Scenario } from './scenarios';
+import type { GlobalParams } from './params';
+import { cloneParams } from './params';
 
 export type UICallbacks = {
-  onScenarioSelect: (id: number) => void;
-  onProjectionToggle: (projection: 'mercator' | 'globe') => void;
+  onScenarioSelect:  (id: number) => void;
+  onProjectionToggle:(projection: 'mercator' | 'globe') => void;
+  onParamsChange:    (params: GlobalParams) => void;
 };
 
 export type UIControls = {
-  mapContainer: HTMLElement;
-  chartCanvas: HTMLCanvasElement;
+  mapContainer:      HTMLElement;
+  chartCanvas:       HTMLCanvasElement;
   setActiveScenario: (id: number) => void;
-  setStatus: (msg: string) => void;
-  setUIProjection: (p: 'mercator' | 'globe') => void;
-  setAnimating: (animating: boolean) => void;
+  setStatus:         (msg: string) => void;
+  setUIProjection:   (p: 'mercator' | 'globe') => void;
+  setAnimating:      (animating: boolean) => void;
 };
 
 export function buildUI(
   appEl: HTMLElement,
   scenarios: Scenario[],
+  initialParams: GlobalParams,
   callbacks: UICallbacks,
 ): UIControls {
   const panel = el('div', 'panel');
 
+  // Title
   const titleEl = el('h1', 'title');
   titleEl.textContent = 'flyTo Arc Visualizer';
   panel.appendChild(titleEl);
@@ -38,6 +43,33 @@ export function buildUI(
     projRow.appendChild(btn);
   }
   panel.appendChild(projRow);
+
+  // Mutable params copy — mutated by input handlers
+  const params: GlobalParams = cloneParams(initialParams);
+  const notify = () => callbacks.onParamsChange(cloneParams(params));
+
+  // From section
+  // Note: MapLibre center is [lng, lat]; UI labels show Lat/Lng in natural order.
+  panel.appendChild(sectionLabel('From'));
+  const fromRow = el('div', 'coord-row');
+  fromRow.appendChild(coordField('Lat', params.from.center[1], v => { params.from.center[1] = v; notify(); }));
+  fromRow.appendChild(coordField('Lng', params.from.center[0], v => { params.from.center[0] = v; notify(); }));
+  panel.appendChild(fromRow);
+  panel.appendChild(optParamRow('Zoom', params.from.zoom, v => { params.from.zoom = v; notify(); }));
+
+  // To section
+  panel.appendChild(sectionLabel('To'));
+  const toRow = el('div', 'coord-row');
+  toRow.appendChild(coordField('Lat', params.to.center[1], v => { params.to.center[1] = v; notify(); }));
+  toRow.appendChild(coordField('Lng', params.to.center[0], v => { params.to.center[0] = v; notify(); }));
+  panel.appendChild(toRow);
+  panel.appendChild(optParamRow('Zoom', params.to.zoom, v => { params.to.zoom = v; notify(); }));
+
+  // Parameters section
+  panel.appendChild(sectionLabel('Parameters'));
+  panel.appendChild(paramRow('minZoom', params.minZoom, v => { params.minZoom = v; notify(); }));
+  panel.appendChild(paramRow('curve',   params.curve,   v => { params.curve   = v; notify(); }));
+  panel.appendChild(paramRow('speed',   params.speed,   v => { params.speed   = v; notify(); }));
 
   // Scenario buttons
   panel.appendChild(sectionLabel('Scenarios'));
@@ -87,9 +119,7 @@ export function buildUI(
       const scenario = scenarios.find(s => s.id === id);
       if (scenario) descEl.textContent = scenario.description;
     },
-    setStatus(msg) {
-      statusEl.textContent = msg;
-    },
+    setStatus(msg) { statusEl.textContent = msg; },
     setUIProjection(p) {
       for (const [key, btn] of Object.entries(projBtns) as ['mercator' | 'globe', HTMLButtonElement][]) {
         btn.classList.toggle('active', key === p);
@@ -102,6 +132,8 @@ export function buildUI(
   };
 }
 
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
 function el(tag: string, cls: string): HTMLElement {
   const e = document.createElement(tag);
   e.className = cls;
@@ -112,4 +144,64 @@ function sectionLabel(text: string): HTMLElement {
   const e = el('div', 'section-label');
   e.textContent = text;
   return e;
+}
+
+/** Compact label+input for Lat/Lng (two fit side-by-side in .coord-row). */
+function coordField(label: string, initial: number, onChange: (v: number) => void): HTMLElement {
+  const wrap = el('div', 'coord-field');
+  const lbl = el('span', 'coord-label');
+  lbl.textContent = label;
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.className = 'coord-input';
+  input.value = String(initial);
+  input.step = 'any';
+  input.addEventListener('change', () => {
+    const v = parseFloat(input.value);
+    if (!isNaN(v)) onChange(v);
+  });
+  wrap.appendChild(lbl);
+  wrap.appendChild(input);
+  return wrap;
+}
+
+/** Full-width label+input for a required number (minZoom, curve, speed). */
+function paramRow(label: string, initial: number, onChange: (v: number) => void): HTMLElement {
+  const wrap = el('div', 'param-row');
+  const lbl = el('span', 'param-label');
+  lbl.textContent = label;
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.className = 'param-input';
+  input.value = String(initial);
+  input.step = 'any';
+  input.addEventListener('change', () => {
+    const v = parseFloat(input.value);
+    if (!isNaN(v)) onChange(v);
+  });
+  wrap.appendChild(lbl);
+  wrap.appendChild(input);
+  return wrap;
+}
+
+/** Full-width label+input for an optional number (zoom). Empty string → null. */
+function optParamRow(label: string, initial: number | null, onChange: (v: number | null) => void): HTMLElement {
+  const wrap = el('div', 'param-row');
+  const lbl = el('span', 'param-label');
+  lbl.textContent = label;
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.className = 'param-input';
+  input.placeholder = 'auto';
+  input.step = 'any';
+  if (initial !== null) input.value = String(initial);
+  input.addEventListener('change', () => {
+    const raw = input.value.trim();
+    if (raw === '') { onChange(null); return; }
+    const v = parseFloat(raw);
+    if (!isNaN(v)) onChange(v);
+  });
+  wrap.appendChild(lbl);
+  wrap.appendChild(input);
+  return wrap;
 }
