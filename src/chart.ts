@@ -1,4 +1,4 @@
-export type ZoomSample = { zoom: number; t: number };
+export type ZoomSample = { zoom: number; t: number; series?: 'a' | 'b' };
 
 const PAD = { top: 28, right: 20, bottom: 38, left: 48 };
 const ZOOM_MIN = 0;
@@ -7,9 +7,11 @@ const ZOOM_MAX = 14;
 export class ZoomChart {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
-  private samples: ZoomSample[] = [];
+  private samplesA: ZoomSample[] = [];
+  private samplesB: ZoomSample[] = [];
+  private recordingA = false;
+  private recordingB = false;
   private minZoomMarkers: Array<{ value: number | null; kind: 'flyto' | 'map' | 'none' }> = [];
-  private recording = false;
   private observer: ResizeObserver;
 
   constructor(canvas: HTMLCanvasElement) {
@@ -21,7 +23,10 @@ export class ZoomChart {
   }
 
   startRecording(minZoom: number | null | { value: number | null; kind: 'flyto' | 'map' | 'none' } | Array<{ value: number | null; kind: 'flyto' | 'map' | 'none' }>): void {
-    this.samples = [];
+    this.samplesA = [];
+    this.samplesB = [];
+    this.recordingA = true;
+    this.recordingB = true;
     // normalize legacy inputs to array of markers for compatibility
     if (minZoom === null) {
       this.minZoomMarkers = [];
@@ -32,18 +37,23 @@ export class ZoomChart {
     } else {
       this.minZoomMarkers = [minZoom];
     }
-    this.recording = true;
     this.redraw();
   }
 
-  addSample(zoom: number, t: number): void {
-    if (!this.recording) return;
-    this.samples.push({ zoom, t });
+  addSample(zoom: number, t: number, series: 'a' | 'b' = 'a'): void {
+    if (series === 'a' && !this.recordingA) return;
+    if (series === 'b' && !this.recordingB) return;
+    if (series === 'a') {
+      this.samplesA.push({ zoom, t, series: 'a' });
+    } else {
+      this.samplesB.push({ zoom, t, series: 'b' });
+    }
     this.redraw();
   }
 
   stopRecording(): void {
-    this.recording = false;
+    this.recordingA = false;
+    this.recordingB = false;
     this.redraw();
   }
 
@@ -72,7 +82,8 @@ export class ZoomChart {
 
     if (cW <= 0 || cH <= 0) return;
 
-    const maxT = this.samples.length > 0 ? Math.max(...this.samples.map((s) => s.t), 1000) : 5000;
+    const allSamples = [...this.samplesA, ...this.samplesB];
+    const maxT = allSamples.length > 0 ? Math.max(...allSamples.map((s) => s.t), 1000) : 5000;
 
     const toX = (t: number) => left + (t / maxT) * cW;
     const toY = (zoom: number) => top + (1 - (zoom - ZOOM_MIN) / (ZOOM_MAX - ZOOM_MIN)) * cH;
@@ -182,27 +193,61 @@ export class ZoomChart {
       }
     }
 
-    // Zoom curve
-    if (this.samples.length >= 2) {
-      ctx.strokeStyle = this.recording ? '#60a5fa' : '#34d399';
+    // Zoom curves
+    const colorA = '#60a5fa'; // blue (official)
+    const colorB = '#f97316'; // orange (dev)
+
+    // Series A
+    if (this.samplesA.length >= 2) {
+      ctx.strokeStyle = this.recordingA ? colorA : '#34d399';
       ctx.lineWidth = 2;
       ctx.setLineDash([]);
       ctx.beginPath();
-      ctx.moveTo(toX(this.samples[0].t), toY(this.samples[0].zoom));
-      for (let i = 1; i < this.samples.length; i++) {
-        ctx.lineTo(toX(this.samples[i].t), toY(this.samples[i].zoom));
+      ctx.moveTo(toX(this.samplesA[0].t), toY(this.samplesA[0].zoom));
+      for (let i = 1; i < this.samplesA.length; i++) {
+        ctx.lineTo(toX(this.samplesA[i].t), toY(this.samplesA[i].zoom));
       }
       ctx.stroke();
     }
+
+    // Series B
+    if (this.samplesB.length >= 2) {
+      ctx.strokeStyle = this.recordingB ? colorB : '#34d399';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.moveTo(toX(this.samplesB[0].t), toY(this.samplesB[0].zoom));
+      for (let i = 1; i < this.samplesB.length; i++) {
+        ctx.lineTo(toX(this.samplesB[i].t), toY(this.samplesB[i].zoom));
+      }
+      ctx.stroke();
+    }
+
+    // Legend
+    ctx.font = '10px system-ui';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    const legendX = W - right - 80;
+    const legendY = top + 8;
+    ctx.fillStyle = colorA;
+    ctx.fillText('●', legendX, legendY);
+    ctx.fillStyle = '#6e7681';
+    ctx.fillText('A · official', legendX + 8, legendY);
+    ctx.fillStyle = colorB;
+    ctx.fillText('●', legendX, legendY + 14);
+    ctx.fillStyle = '#6e7681';
+    ctx.fillText('B · dev', legendX + 8, legendY + 14);
 
     // Status badge
     ctx.font = '11px system-ui';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'alphabetic';
-    if (this.recording) {
+    const isRecording = this.recordingA || this.recordingB;
+    const hasData = this.samplesA.length > 0 || this.samplesB.length > 0;
+    if (isRecording) {
       ctx.fillStyle = '#60a5fa';
       ctx.fillText('● recording', W - right, top - 8);
-    } else if (this.samples.length > 0) {
+    } else if (hasData) {
       ctx.fillStyle = '#34d399';
       ctx.fillText('✓ complete', W - right, top - 8);
     }

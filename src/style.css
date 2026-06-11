@@ -116,9 +116,37 @@ body {
   min-width: 0;
 }
 
-.map-container {
+/* ── Maps container (side by side) ──────────── */
+.maps-container {
   flex: 3;
+  display: flex;
+  gap: 8px;
   min-height: 0;
+  padding: 8px;
+}
+
+.map-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.map-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #8b949e;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding-bottom: 4px;
+}
+
+.map-container {
+  flex: 1;
+  min-height: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #30363d;
 }
 
 .chart-canvas {

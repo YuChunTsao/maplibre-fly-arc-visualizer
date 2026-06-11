@@ -8,7 +8,8 @@ export type UICallbacks = {
 };
 
 export type UIControls = {
-  mapContainer: HTMLElement;
+  mapContainerA: string; // id="map-a"
+  mapContainerB: string; // id="map-b"
   chartCanvas: HTMLCanvasElement;
   setStatus: (msg: string) => void;
   setUIProjection: (p: 'mercator' | 'globe') => void;
@@ -143,18 +144,40 @@ export function buildUI(
 
   // Right column
   const right = el('div', 'right');
-  const mapContainer = el('div', 'map-container');
-  mapContainer.id = 'map';
+
+  // Maps with labels
+  const mapsContainer = el('div', 'maps-container');
+
+  const mapAWrapper = el('div', 'map-wrapper');
+  const mapALabel = el('div', 'map-label');
+  mapALabel.textContent = 'A · official';
+  const mapContainerA = el('div', 'map-container');
+  mapContainerA.id = 'map-a';
+  mapAWrapper.appendChild(mapALabel);
+  mapAWrapper.appendChild(mapContainerA);
+  mapsContainer.appendChild(mapAWrapper);
+
+  const mapBWrapper = el('div', 'map-wrapper');
+  const mapBLabel = el('div', 'map-label');
+  mapBLabel.textContent = 'B · dev';
+  const mapContainerB = el('div', 'map-container');
+  mapContainerB.id = 'map-b';
+  mapBWrapper.appendChild(mapBLabel);
+  mapBWrapper.appendChild(mapContainerB);
+  mapsContainer.appendChild(mapBWrapper);
+
+  right.appendChild(mapsContainer);
+
   const chartCanvas = document.createElement('canvas');
   chartCanvas.className = 'chart-canvas';
-  right.appendChild(mapContainer);
   right.appendChild(chartCanvas);
 
   appEl.appendChild(panel);
   appEl.appendChild(right);
 
   return {
-    mapContainer,
+    mapContainerA: 'map-a',
+    mapContainerB: 'map-b',
     chartCanvas,
     setStatus(msg) {
       statusEl.textContent = msg;

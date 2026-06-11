@@ -5,7 +5,14 @@ import type { GlobalParams } from './params';
 import { createMap, runScenario, applyProjection } from './map-controller';
 import { ZoomChart } from './chart';
 import { buildUI } from './ui';
+import * as maplibreglA from 'maplibre-gl';
+import * as maplibreglB from 'maplibre-gl-b';
 import { NavigationControl } from 'maplibre-gl';
+import workerUrlA from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
+
+// Each MapLibre build needs its own worker wired up explicitly.
+maplibreglA.setWorkerUrl(workerUrlA);
+maplibreglB.setWorkerUrl(new URL('../libs/maplibre-gl-worker-dev.mjs', import.meta.url).href);
 
 let isAnimating = false;
 let pendingProjection: 'mercator' | 'globe' | null = null;
@@ -14,7 +21,7 @@ let globalParams: GlobalParams = cloneParams(DEFAULT_PARAMS);
 const appEl = document.getElementById('app');
 if (!appEl) throw new Error('Missing #app');
 
-const { mapContainer, chartCanvas, setStatus, setUIProjection, setAnimating } =
+const { mapContainerA, mapContainerB, chartCanvas, setStatus, setUIProjection, setAnimating } =
   buildUI(appEl, globalParams, {
     onParamsChange(params) {
       globalParams = params;
@@ -28,15 +35,19 @@ const { mapContainer, chartCanvas, setStatus, setUIProjection, setAnimating } =
     onProjectionToggle(p) {
       if (isAnimating) return;
       setUIProjection(p);
-      if (map.isStyleLoaded()) {
-        applyProjection(map, p);
+      if (mapA.isStyleLoaded()) {
+        applyProjection(mapA, p);
       } else {
         pendingProjection = p;
+      }
+      if (mapB.isStyleLoaded()) {
+        applyProjection(mapB, p);
       }
     },
   });
 
-const map = createMap(mapContainer.id);
+const mapA = createMap(mapContainerA, maplibreglA);
+const mapB = createMap(mapContainerB, maplibreglB);
 const chart = new ZoomChart(chartCanvas);
 
 function startScenario(): void {
@@ -53,24 +64,50 @@ function startScenario(): void {
   setStatus('Running…');
   isAnimating = true;
   setAnimating(true);
-  runScenario(
-    map,
-    globalParams,
-    (zoom, t) => chart.addSample(zoom, t),
-    () => {
+
+  let doneA = false;
+  let doneB = false;
+
+  const onAnimationEnd = () => {
+    if (doneA && doneB) {
       isAnimating = false;
       setAnimating(false);
       chart.stopRecording();
       setStatus('Complete');
     }
+  };
+
+  // Run both scenarios in parallel
+  runScenario(
+    mapA,
+    globalParams,
+    (zoom, t) => chart.addSample(zoom, t, 'a'),
+    () => {
+      doneA = true;
+      onAnimationEnd();
+    }
+  );
+
+  runScenario(
+    mapB,
+    globalParams,
+    (zoom, t) => chart.addSample(zoom, t, 'b'),
+    () => {
+      doneB = true;
+      onAnimationEnd();
+    }
   );
 }
 
-map.once('load', () => {
+mapA.once('load', () => {
   if (pendingProjection) {
-    applyProjection(map, pendingProjection);
+    applyProjection(mapA, pendingProjection);
     pendingProjection = null;
   }
 
-  map.addControl(new NavigationControl(), 'top-right');
+  mapA.addControl(new NavigationControl(), 'top-right');
+});
+
+mapB.once('load', () => {
+  mapB.addControl(new NavigationControl(), 'top-right');
 });

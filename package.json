@@ -10,7 +10,7 @@
     "format": "prettier --write \"**/*.{js,ts,jsx,tsx,json,css,scss,md,html}\""
   },
   "dependencies": {
-    "maplibre-gl": "file:../maplibre-gl-js"
+    "maplibre-gl": "6.0.0-13"
   },
   "devDependencies": {
     "gh-pages": "^6.2.0",

@@ -9,19 +9,12 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        // Exact match only — prevents the alias from also rewriting
-        // subpath imports like 'maplibre-gl/dist/maplibre-gl.css'.
-        find: /^maplibre-gl$/,
-        replacement: path.resolve(__dirname, '../maplibre-gl-js/dist/maplibre-gl-dev.mjs'),
+        find: /^maplibre-gl-b$/,
+        replacement: path.resolve(__dirname, './libs/maplibre-gl-compare.mjs'),
       },
     ],
   },
   optimizeDeps: {
-    exclude: ['maplibre-gl'],
-  },
-  server: {
-    fs: {
-      allow: ['..'],
-    },
+    exclude: ['maplibre-gl-b'],
   },
 });

@@ -1,16 +1,18 @@
-import * as maplibregl from 'maplibre-gl';
+import type * as maplibregl from 'maplibre-gl';
 import type { FlyToOptions, Map as MapLibreMap } from 'maplibre-gl';
 import type { GlobalParams } from './params';
 
+type MapLib = typeof maplibregl;
+
 let activeSetMinZoom: number | null = null;
 
-export function createMap(containerId: string): MapLibreMap {
-  return new maplibregl.Map({
+export function createMap(containerId: string, lib: MapLib): MapLibreMap {
+  return new lib.Map({
     container: containerId,
     style: 'https://tiles.openfreemap.org/styles/bright',
     center: [0, 0],
     zoom: 0,
-  });
+  }) as MapLibreMap;
 }
 
 export function runScenario(
