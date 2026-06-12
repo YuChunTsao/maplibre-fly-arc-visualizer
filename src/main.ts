@@ -18,6 +18,7 @@ let isAnimating = false;
 let pendingProjection: 'mercator' | 'globe' | null = null;
 let globalParams: GlobalParams = cloneParams(DEFAULT_PARAMS);
 let mapMinZoomLockActive = false;
+let isSyncing = false;
 
 const appEl = document.getElementById('app');
 if (!appEl) throw new Error('Missing #app');
@@ -63,6 +64,23 @@ const mapA = createMap(mapContainerA, maplibreglA, '#60a5fa');
 const mapB = createMap(mapContainerB, maplibreglB, '#f97316');
 const chart = new ZoomChart(chartCanvas);
 
+function syncAtoB() {
+  if (isSyncing || isAnimating) return;
+  isSyncing = true;
+  mapB.jumpTo({ center: mapA.getCenter(), zoom: mapA.getZoom(), bearing: mapA.getBearing(), pitch: mapA.getPitch() });
+  isSyncing = false;
+}
+
+function syncBtoA() {
+  if (isSyncing || isAnimating) return;
+  isSyncing = true;
+  mapA.jumpTo({ center: mapB.getCenter(), zoom: mapB.getZoom(), bearing: mapB.getBearing(), pitch: mapB.getPitch() });
+  isSyncing = false;
+}
+
+function attachSync() { mapA.on('move', syncAtoB); mapB.on('move', syncBtoA); }
+function detachSync() { mapA.off('move', syncAtoB); mapB.off('move', syncBtoA); }
+
 function startScenario(): void {
   // Build an array of minZoom markers to pass to the chart (support both map and flyto simultaneously)
   const markers: Array<{ value: number | null; kind: 'flyto' | 'map' | 'none' }> = [];
@@ -77,6 +95,7 @@ function startScenario(): void {
   setStatus('Running…');
   isAnimating = true;
   setAnimating(true);
+  detachSync();
 
   let doneA = false;
   let doneB = false;
@@ -86,6 +105,7 @@ function startScenario(): void {
       isAnimating = false;
       setAnimating(false);
       chart.stopRecording();
+      attachSync();
       setStatus('Complete');
       if (mapMinZoomLockActive && globalParams.mapMinZoom !== null) {
         mapA.setMinZoom(globalParams.mapMinZoom);
@@ -116,15 +136,22 @@ function startScenario(): void {
   );
 }
 
+let mapsLoaded = 0;
+function onMapLoaded() {
+  mapsLoaded++;
+  if (mapsLoaded === 2) attachSync();
+}
+
 mapA.once('load', () => {
   if (pendingProjection) {
     applyProjection(mapA, pendingProjection);
     pendingProjection = null;
   }
-
   mapA.addControl(new NavigationControl(), 'top-right');
+  onMapLoaded();
 });
 
 mapB.once('load', () => {
   mapB.addControl(new NavigationControl(), 'top-right');
+  onMapLoaded();
 });
