@@ -97,6 +97,7 @@ const {
 });
 
 saveToHash(globalParams, mode, projection);
+window.addEventListener('hashchange', () => window.location.reload());
 
 const mapA = createMap(mapContainerA, maplibreglA, '#60a5fa');
 const mapB = createMap(mapContainerB, maplibreglB, '#f97316');
