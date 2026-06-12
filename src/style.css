@@ -282,8 +282,15 @@ body {
   -moz-appearance: textfield;
 }
 
-/* ── Mode toggle button ─────────────────────── */
+/* ── Mode toggle + Copy Link row ────────────── */
+.mode-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
 .mode-toggle-btn {
+  flex: 1;
   padding: 5px 10px;
   border-radius: 6px;
   cursor: pointer;
@@ -294,10 +301,26 @@ body {
   font-family: inherit;
   transition: background 0.15s;
   text-align: center;
-  width: 100%;
 }
 
 .mode-toggle-btn:hover {
+  background: #e2e8f0;
+}
+
+.copy-link-btn {
+  padding: 5px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid #cbd5e1;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 11px;
+  font-family: inherit;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.copy-link-btn:hover {
   background: #e2e8f0;
 }
 

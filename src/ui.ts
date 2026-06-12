@@ -22,7 +22,7 @@ export type UIControls = {
 
 export function buildUI(
   appEl: HTMLElement,
-  initialParams: GlobalParams,
+  initialState: { params: GlobalParams; mode: 'playground' | 'compare'; projection: 'mercator' | 'globe' },
   callbacks: UICallbacks
 ): UIControls {
   const panel = el('div', 'panel');
@@ -32,16 +32,27 @@ export function buildUI(
   titleEl.textContent = 'flyTo Arc Visualizer';
   panel.appendChild(titleEl);
 
-  // Mode toggle
-  let currentMode: 'playground' | 'compare' = 'playground';
+  // Mode toggle + Copy Link row
+  let currentMode: 'playground' | 'compare' = initialState.mode;
   const modeBtn = document.createElement('button');
   modeBtn.className = 'mode-toggle-btn';
-  modeBtn.textContent = 'Compare Mode →';
+  modeBtn.textContent = initialState.mode === 'playground' ? 'Compare Mode →' : '← Playground';
   modeBtn.addEventListener('click', () => {
     const newMode = currentMode === 'playground' ? 'compare' : 'playground';
     callbacks.onModeChange(newMode);
   });
-  panel.appendChild(modeBtn);
+  const copyLinkBtn = document.createElement('button');
+  copyLinkBtn.className = 'copy-link-btn';
+  copyLinkBtn.textContent = 'Copy Link';
+  copyLinkBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.href);
+    copyLinkBtn.textContent = 'Copied!';
+    setTimeout(() => { copyLinkBtn.textContent = 'Copy Link'; }, 1500);
+  });
+  const modeRow = el('div', 'mode-row');
+  modeRow.appendChild(modeBtn);
+  modeRow.appendChild(copyLinkBtn);
+  panel.appendChild(modeRow);
 
   // Projection toggle
   panel.appendChild(sectionLabel('Projection'));
@@ -49,7 +60,7 @@ export function buildUI(
   const projBtns = {} as Record<'mercator' | 'globe', HTMLButtonElement>;
   for (const p of ['mercator', 'globe'] as const) {
     const btn = document.createElement('button');
-    btn.className = 'proj-btn' + (p === 'mercator' ? ' active' : '');
+    btn.className = 'proj-btn' + (p === initialState.projection ? ' active' : '');
     btn.textContent = p.charAt(0).toUpperCase() + p.slice(1);
     btn.addEventListener('click', () => callbacks.onProjectionToggle(p));
     projBtns[p] = btn;
@@ -58,7 +69,7 @@ export function buildUI(
   panel.appendChild(projRow);
 
   // Mutable params copy — mutated by input handlers
-  const params: GlobalParams = cloneParams(initialParams);
+  const params: GlobalParams = cloneParams(initialState.params);
   const notify = () => callbacks.onParamsChange(cloneParams(params));
 
   // From section
@@ -188,7 +199,7 @@ export function buildUI(
 
   const mapAWrapper = el('div', 'map-wrapper');
   const mapALabel = el('div', 'map-label');
-  mapALabel.textContent = 'official';
+  mapALabel.textContent = initialState.mode === 'compare' ? 'A · official' : 'official';
   const mapContainerA = el('div', 'map-container');
   mapContainerA.id = 'map-a';
   mapAWrapper.appendChild(mapALabel);
@@ -196,7 +207,7 @@ export function buildUI(
   mapsContainer.appendChild(mapAWrapper);
 
   const mapBWrapper = el('div', 'map-wrapper');
-  mapBWrapper.style.display = 'none'; // hidden in playground mode by default
+  mapBWrapper.style.display = initialState.mode === 'compare' ? '' : 'none';
   const mapBLabel = el('div', 'map-label');
   mapBLabel.textContent = 'B · dev';
   const mapContainerB = el('div', 'map-container');
@@ -232,6 +243,7 @@ export function buildUI(
   codeEl.textContent = '// Run animation to generate code';
   codeOutputSection.appendChild(codeHeader);
   codeOutputSection.appendChild(codeEl);
+  if (initialState.mode !== 'playground') codeOutputSection.style.display = 'none';
   right.appendChild(codeOutputSection);
 
   appEl.appendChild(panel);

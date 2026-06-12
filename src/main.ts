@@ -2,6 +2,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import './style.css';
 import { DEFAULT_PARAMS, cloneParams } from './params';
 import type { GlobalParams } from './params';
+import { loadFromHash, saveToHash } from './url-params';
 import { createMap, runScenario, applyProjection } from './map-controller';
 import { ZoomChart } from './chart';
 import { buildUI } from './ui';
@@ -14,12 +15,14 @@ import workerUrlA from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
 maplibreglA.setWorkerUrl(workerUrlA);
 maplibreglB.setWorkerUrl(new URL('../libs/maplibre-gl-worker-dev.mjs', import.meta.url).href);
 
+const _initial = loadFromHash();
 let isAnimating = false;
-let pendingProjection: 'mercator' | 'globe' | null = null;
-let globalParams: GlobalParams = cloneParams(DEFAULT_PARAMS);
+let globalParams: GlobalParams = _initial ? cloneParams(_initial.params) : cloneParams(DEFAULT_PARAMS);
+let mode: 'playground' | 'compare' = _initial?.mode ?? 'playground';
+let projection: 'mercator' | 'globe' = _initial?.projection ?? 'mercator';
+let pendingProjection: 'mercator' | 'globe' | null = projection !== 'mercator' ? projection : null;
 let mapMinZoomLockActive = false;
 let isSyncing = false;
-let mode: 'playground' | 'compare' = 'playground';
 
 const appEl = document.getElementById('app');
 if (!appEl) throw new Error('Missing #app');
@@ -33,9 +36,10 @@ const {
   setAnimating,
   setCodeOutput,
   setMode,
-} = buildUI(appEl, globalParams, {
+} = buildUI(appEl, { params: globalParams, mode, projection }, {
   onParamsChange(params) {
     globalParams = params;
+    saveToHash(globalParams, mode, projection);
     if (mapMinZoomLockActive) {
       const v = globalParams.mapMinZoom ?? null;
       mapA.setMinZoom(v);
@@ -57,6 +61,8 @@ const {
 
   onProjectionToggle(p) {
     if (isAnimating) return;
+    projection = p;
+    saveToHash(globalParams, mode, projection);
     setUIProjection(p);
     if (mapA.isStyleLoaded()) {
       applyProjection(mapA, p);
@@ -70,6 +76,7 @@ const {
 
   onModeChange(newMode) {
     mode = newMode;
+    saveToHash(globalParams, mode, projection);
     setMode(newMode);
     chart.setSingleSeriesMode(newMode === 'playground');
     if (newMode === 'compare') {
@@ -85,6 +92,8 @@ const {
     }
   },
 });
+
+saveToHash(globalParams, mode, projection);
 
 const mapA = createMap(mapContainerA, maplibreglA, '#60a5fa');
 const mapB = createMap(mapContainerB, maplibreglB, '#f97316');
