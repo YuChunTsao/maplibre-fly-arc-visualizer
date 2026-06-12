@@ -10,9 +10,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noEmit": true,
-    "baseUrl": ".",
     "paths": {
-      "maplibre-gl-b": ["node_modules/maplibre-gl"]
+      "maplibre-gl-b": ["./node_modules/maplibre-gl"]
     }
   },
   "include": ["src"]

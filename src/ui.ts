@@ -62,18 +62,17 @@ export function buildUI(
   const notify = () => callbacks.onParamsChange(cloneParams(params));
 
   // From section
-  // Note: MapLibre center is [lng, lat]; UI labels show Lat/Lng in natural order.
   panel.appendChild(sectionLabel('From'));
   const fromRow = el('div', 'coord-row');
   fromRow.appendChild(
-    coordField('Lat', params.from.center[1], (v) => {
-      params.from.center[1] = v;
+    coordField('Lng', params.from.center[0], (v) => {
+      params.from.center[0] = v;
       notify();
     })
   );
   fromRow.appendChild(
-    coordField('Lng', params.from.center[0], (v) => {
-      params.from.center[0] = v;
+    coordField('Lat', params.from.center[1], (v) => {
+      params.from.center[1] = v;
       notify();
     })
   );
@@ -89,14 +88,14 @@ export function buildUI(
   panel.appendChild(sectionLabel('To'));
   const toRow = el('div', 'coord-row');
   toRow.appendChild(
-    coordField('Lat', params.to.center[1], (v) => {
-      params.to.center[1] = v;
+    coordField('Lng', params.to.center[0], (v) => {
+      params.to.center[0] = v;
       notify();
     })
   );
   toRow.appendChild(
-    coordField('Lng', params.to.center[0], (v) => {
-      params.to.center[0] = v;
+    coordField('Lat', params.to.center[1], (v) => {
+      params.to.center[1] = v;
       notify();
     })
   );
@@ -108,17 +107,12 @@ export function buildUI(
     })
   );
 
-  // Parameters section
-  panel.appendChild(sectionLabel('Parameters'));
-  // Independent minZooms (optional) — if null, use application/map default
+  // Map settings
+  panel.appendChild(sectionLabel('Map'));
   {
     const row = el('div', 'param-row');
     const lbl = el('span', 'param-label');
-    const lblText = document.createTextNode('mapMinZoom');
-    const hint = el('span', 'param-hint');
-    hint.textContent = ' (via map.setMinZoom())';
-    lbl.appendChild(lblText);
-    lbl.appendChild(hint);
+    lbl.textContent = 'mapMinZoom';
     const input = document.createElement('input');
     input.type = 'number';
     input.className = 'param-input';
@@ -134,6 +128,24 @@ export function buildUI(
     row.appendChild(input);
     panel.appendChild(row);
   }
+
+  const applyRow = el('div', 'apply-min-zoom-row');
+  const applyCheck = document.createElement('input');
+  applyCheck.type = 'checkbox';
+  applyCheck.id = 'apply-min-zoom-check';
+  applyCheck.checked = false;
+  applyCheck.addEventListener('change', () => {
+    callbacks.onMapMinZoomLock(applyCheck.checked);
+  });
+  const applyLabel = document.createElement('label');
+  applyLabel.htmlFor = 'apply-min-zoom-check';
+  applyLabel.textContent = 'apply mapMinZoom to map';
+  applyRow.appendChild(applyCheck);
+  applyRow.appendChild(applyLabel);
+  panel.appendChild(applyRow);
+
+  // flyTo options
+  panel.appendChild(sectionLabel('flyTo Options'));
   panel.appendChild(
     optParamRow('minZoom', params.minZoom, (v) => {
       params.minZoom = v;
@@ -153,21 +165,6 @@ export function buildUI(
     })
   );
 
-  const applyRow = el('div', 'apply-min-zoom-row');
-  const applyCheck = document.createElement('input');
-  applyCheck.type = 'checkbox';
-  applyCheck.id = 'apply-min-zoom-check';
-  applyCheck.checked = false;
-  applyCheck.addEventListener('change', () => {
-    callbacks.onMapMinZoomLock(applyCheck.checked);
-  });
-  const applyLabel = document.createElement('label');
-  applyLabel.htmlFor = 'apply-min-zoom-check';
-  applyLabel.textContent = 'apply mapMinZoom to map';
-  applyRow.appendChild(applyCheck);
-  applyRow.appendChild(applyLabel);
-  panel.appendChild(applyRow);
-
   // Run button
   panel.appendChild(sectionLabel('Run'));
   const runRow = el('div', 'run-row');
@@ -177,12 +174,6 @@ export function buildUI(
   runBtn.addEventListener('click', () => callbacks.onRun());
   runRow.appendChild(runBtn);
   panel.appendChild(runRow);
-
-  // Description
-  panel.appendChild(sectionLabel('Description'));
-  const descEl = el('p', 'description');
-  descEl.textContent = 'Trigger flyTo using current parameters.';
-  panel.appendChild(descEl);
 
   // Status
   const statusEl = el('div', 'status');
