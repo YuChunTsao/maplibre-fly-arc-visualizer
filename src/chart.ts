@@ -199,7 +199,7 @@ export class ZoomChart {
 
     // Series A
     if (this.samplesA.length >= 2) {
-      ctx.strokeStyle = this.recordingA ? colorA : '#34d399';
+      ctx.strokeStyle = colorA;
       ctx.lineWidth = 2;
       ctx.setLineDash([]);
       ctx.beginPath();
@@ -212,7 +212,7 @@ export class ZoomChart {
 
     // Series B
     if (this.samplesB.length >= 2) {
-      ctx.strokeStyle = this.recordingB ? colorB : '#34d399';
+      ctx.strokeStyle = colorB;
       ctx.lineWidth = 2;
       ctx.setLineDash([]);
       ctx.beginPath();
