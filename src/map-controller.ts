@@ -1,18 +1,32 @@
 import type * as maplibregl from 'maplibre-gl';
-import type { FlyToOptions, Map as MapLibreMap } from 'maplibre-gl';
+import type { FlyToOptions, Map as MapLibreMap, GeoJSONSource } from 'maplibre-gl';
 import type { GlobalParams } from './params';
 
 type MapLib = typeof maplibregl;
 
-let activeSetMinZoom: number | null = null;
-
-export function createMap(containerId: string, lib: MapLib): MapLibreMap {
-  return new lib.Map({
+export function createMap(containerId: string, lib: MapLib, trajectoryColor = '#888888'): MapLibreMap {
+  const map = new lib.Map({
     container: containerId,
     style: 'https://tiles.openfreemap.org/styles/bright',
     center: [0, 0],
     zoom: 0,
   }) as MapLibreMap;
+
+  map.once('load', () => {
+    map.addSource('trajectory', {
+      type: 'geojson',
+      data: { type: 'Feature', geometry: { type: 'LineString', coordinates: [] }, properties: {} },
+    });
+    map.addLayer({
+      id: 'trajectory-line',
+      type: 'line',
+      source: 'trajectory',
+      layout: { 'line-cap': 'round', 'line-join': 'round' },
+      paint: { 'line-color': trajectoryColor, 'line-width': 2, 'line-opacity': 0.85 },
+    });
+  });
+
+  return map;
 }
 
 export function runScenario(
@@ -22,12 +36,7 @@ export function runScenario(
   onAnimationEnd: () => void
 ): void {
   map.stop();
-
-  // Clear any previously set minZoom
-  if (activeSetMinZoom !== null) {
-    map.setMinZoom(null);
-    activeSetMinZoom = null;
-  }
+  map.setMinZoom(null);
 
   const fromZoom = params.from.zoom ?? map.getZoom();
   map.jumpTo({ center: params.from.center, zoom: fromZoom });
@@ -35,16 +44,25 @@ export function runScenario(
   // So `params.to.zoom ?? map.getZoom()` means "same zoom as from" when unset.
   const toZoom = params.to.zoom ?? map.getZoom();
 
+  const trajSource = map.getSource('trajectory') as GeoJSONSource | undefined;
+  const coords: [number, number][] = [];
+  trajSource?.setData({ type: 'Feature', geometry: { type: 'LineString', coordinates: [] }, properties: {} });
+
   const startTime = Date.now();
-  const moveHandler = () => onZoomSample(map.getZoom(), Date.now() - startTime);
+  const moveHandler = () => {
+    onZoomSample(map.getZoom(), Date.now() - startTime);
+    const { lng, lat } = map.getCenter();
+    coords.push([lng, lat]);
+    trajSource?.setData({
+      type: 'Feature',
+      geometry: { type: 'LineString', coordinates: coords },
+      properties: {},
+    });
+  };
 
   const endHandler = () => {
     map.off('move', moveHandler);
-    // If we set a map minZoom for this run, clear it now.
-    if (activeSetMinZoom !== null) {
-      map.setMinZoom(null);
-      activeSetMinZoom = null;
-    }
+    map.setMinZoom(null);
     onAnimationEnd();
   };
 
@@ -65,9 +83,7 @@ export function runScenario(
   }
 
   if (params.mapMinZoom !== null && params.mapMinZoom !== undefined) {
-    const effective = params.mapMinZoom;
-    map.setMinZoom(effective);
-    activeSetMinZoom = effective;
+    map.setMinZoom(params.mapMinZoom);
   }
 
   map.flyTo(flyToOpts);

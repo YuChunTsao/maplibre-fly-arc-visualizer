@@ -5,6 +5,7 @@ export type UICallbacks = {
   onRun: () => void;
   onProjectionToggle: (projection: 'mercator' | 'globe') => void;
   onParamsChange: (params: GlobalParams) => void;
+  onMapMinZoomLock: (active: boolean) => void;
 };
 
 export type UIControls = {
@@ -96,12 +97,36 @@ export function buildUI(
   // Parameters section
   panel.appendChild(sectionLabel('Parameters'));
   // Independent minZooms (optional) — if null, use application/map default
-  panel.appendChild(
-    optParamRow('mapMinZoom', params.mapMinZoom, (v) => {
-      params.mapMinZoom = v;
+  {
+    const row = el('div', 'param-row');
+    const lbl = el('span', 'param-label');
+    lbl.textContent = 'mapMinZoom';
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.className = 'param-input';
+    input.placeholder = 'auto';
+    input.step = 'any';
+    if (params.mapMinZoom !== null) input.value = String(params.mapMinZoom);
+    input.addEventListener('change', () => {
+      const raw = input.value.trim();
+      params.mapMinZoom = raw === '' ? null : (isNaN(parseFloat(raw)) ? null : parseFloat(raw));
       notify();
-    })
-  );
+    });
+    const lockBtn = document.createElement('button');
+    lockBtn.className = 'min-zoom-lock-btn';
+    lockBtn.textContent = 'apply';
+    let lockActive = false;
+    lockBtn.addEventListener('click', () => {
+      lockActive = !lockActive;
+      lockBtn.classList.toggle('active', lockActive);
+      lockBtn.textContent = lockActive ? 'applied' : 'apply';
+      callbacks.onMapMinZoomLock(lockActive);
+    });
+    row.appendChild(lbl);
+    row.appendChild(input);
+    row.appendChild(lockBtn);
+    panel.appendChild(row);
+  }
   panel.appendChild(
     optParamRow('flyToMinZoom', params.flyToMinZoom, (v) => {
       params.flyToMinZoom = v;

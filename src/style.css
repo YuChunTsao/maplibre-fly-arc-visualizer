@@ -223,6 +223,30 @@ body {
   border-color: #388bfd;
 }
 
+/* ── mapMinZoom lock toggle ──────────────────── */
+.min-zoom-lock-btn {
+  padding: 3px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid #30363d;
+  background: #21262d;
+  color: #6e7681;
+  font-size: 11px;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.min-zoom-lock-btn:hover:not(:disabled) {
+  background: #30363d;
+  color: #c9d1d9;
+}
+
+.min-zoom-lock-btn.active {
+  background: #1a3a6b;
+  border-color: #388bfd;
+  color: #60a5fa;
+}
+
 /* Hide number input spinners */
 .coord-input::-webkit-inner-spin-button,
 .coord-input::-webkit-outer-spin-button,

@@ -17,6 +17,7 @@ maplibreglB.setWorkerUrl(new URL('../libs/maplibre-gl-worker-dev.mjs', import.me
 let isAnimating = false;
 let pendingProjection: 'mercator' | 'globe' | null = null;
 let globalParams: GlobalParams = cloneParams(DEFAULT_PARAMS);
+let mapMinZoomLockActive = false;
 
 const appEl = document.getElementById('app');
 if (!appEl) throw new Error('Missing #app');
@@ -25,11 +26,23 @@ const { mapContainerA, mapContainerB, chartCanvas, setStatus, setUIProjection, s
   buildUI(appEl, globalParams, {
     onParamsChange(params) {
       globalParams = params;
+      if (mapMinZoomLockActive) {
+        const v = globalParams.mapMinZoom ?? null;
+        mapA.setMinZoom(v);
+        mapB.setMinZoom(v);
+      }
     },
 
     onRun() {
       if (isAnimating) return;
       startScenario();
+    },
+
+    onMapMinZoomLock(active) {
+      mapMinZoomLockActive = active;
+      const v = active ? (globalParams.mapMinZoom ?? null) : null;
+      mapA.setMinZoom(v);
+      mapB.setMinZoom(v);
     },
 
     onProjectionToggle(p) {
@@ -46,8 +59,8 @@ const { mapContainerA, mapContainerB, chartCanvas, setStatus, setUIProjection, s
     },
   });
 
-const mapA = createMap(mapContainerA, maplibreglA);
-const mapB = createMap(mapContainerB, maplibreglB);
+const mapA = createMap(mapContainerA, maplibreglA, '#60a5fa');
+const mapB = createMap(mapContainerB, maplibreglB, '#f97316');
 const chart = new ZoomChart(chartCanvas);
 
 function startScenario(): void {
@@ -74,6 +87,10 @@ function startScenario(): void {
       setAnimating(false);
       chart.stopRecording();
       setStatus('Complete');
+      if (mapMinZoomLockActive && globalParams.mapMinZoom !== null) {
+        mapA.setMinZoom(globalParams.mapMinZoom);
+        mapB.setMinZoom(globalParams.mapMinZoom);
+      }
     }
   };
 
