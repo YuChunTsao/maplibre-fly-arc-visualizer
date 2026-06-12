@@ -13,7 +13,10 @@ import workerUrlA from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
 
 // Each MapLibre build needs its own worker wired up explicitly.
 maplibreglA.setWorkerUrl(workerUrlA);
-maplibreglB.setWorkerUrl(new URL('../libs/maplibre-gl-worker-dev.mjs', import.meta.url).href);
+
+// For dev version, construct URL based on base path
+const base = import.meta.env.BASE_URL;
+maplibreglB.setWorkerUrl(`${base}maplibre-gl-worker-dev.mjs`);
 
 const _initial = loadFromHash();
 let isAnimating = false;

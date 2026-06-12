@@ -6,6 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   base: '/maplibre-fly-arc-visualizer/',
+  publicDir: 'libs',
   resolve: {
     alias: [
       {
@@ -13,8 +14,5 @@ export default defineConfig({
         replacement: path.resolve(__dirname, './libs/maplibre-gl-compare.mjs'),
       },
     ],
-  },
-  optimizeDeps: {
-    exclude: ['maplibre-gl-b'],
   },
 });
