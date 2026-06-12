@@ -77,7 +77,7 @@ export class ZoomChart {
     const cH = H - top - bottom;
 
     ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = '#0d1117';
+    ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, W, H);
 
     if (cW <= 0 || cH <= 0) return;
@@ -92,7 +92,7 @@ export class ZoomChart {
       maxT <= 3000 ? 500 : maxT <= 8000 ? 1000 : maxT <= 20000 ? 2000 : maxT <= 60000 ? 5000 : 10000;
 
     // Grid and axes
-    ctx.strokeStyle = '#21262d';
+    ctx.strokeStyle = '#e2e8f0';
     ctx.lineWidth = 1;
     for (let z = ZOOM_MIN; z <= ZOOM_MAX; z += 2) {
       const y = toY(z);
@@ -109,7 +109,7 @@ export class ZoomChart {
       ctx.stroke();
     }
 
-    ctx.strokeStyle = '#30363d';
+    ctx.strokeStyle = '#cbd5e1';
     ctx.beginPath();
     ctx.moveTo(left, top);
     ctx.lineTo(left, top + cH);
@@ -117,8 +117,8 @@ export class ZoomChart {
     ctx.stroke();
 
     // Y-axis labels
-    ctx.fillStyle = '#6e7681';
-    ctx.font = '10px system-ui';
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '11px system-ui';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
     for (let z = ZOOM_MIN; z <= ZOOM_MAX; z += 2) {
@@ -127,10 +127,10 @@ export class ZoomChart {
 
     // X-axis tick marks and labels
     const axisBottom = top + cH;
-    ctx.strokeStyle = '#30363d';
+    ctx.strokeStyle = '#cbd5e1';
     ctx.lineWidth = 1;
-    ctx.fillStyle = '#6e7681';
-    ctx.font = '10px system-ui';
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '11px system-ui';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     for (let t = tickInterval; t <= maxT; t += tickInterval) {
@@ -144,7 +144,7 @@ export class ZoomChart {
     }
 
     // Axis titles
-    ctx.fillStyle = '#6e7681';
+    ctx.fillStyle = '#94a3b8';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'alphabetic';
     ctx.fillText('time (ms)', left + cW / 2, H - 6);
@@ -176,14 +176,14 @@ export class ZoomChart {
           ctx.stroke();
           ctx.setLineDash([]);
           ctx.fillStyle = color;
-          ctx.font = '10px system-ui';
+          ctx.font = '11px system-ui';
           ctx.textAlign = 'left';
           ctx.textBaseline = 'alphabetic';
           ctx.fillText(`${labelPrefix} = ${marker.value}`, left + 4, y - 4);
         } else {
           // value === null → user uses default; show label stacked at top
           ctx.fillStyle = color;
-          ctx.font = '10px system-ui';
+          ctx.font = '11px system-ui';
           ctx.textAlign = 'left';
           ctx.textBaseline = 'alphabetic';
           const y = top + 12 + defaultLabelOffset;
@@ -224,31 +224,31 @@ export class ZoomChart {
     }
 
     // Legend
-    ctx.font = '10px system-ui';
+    ctx.font = '11px system-ui';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'alphabetic';
     const legendX = W - right - 80;
     const legendY = top + 8;
     ctx.fillStyle = colorA;
     ctx.fillText('●', legendX, legendY);
-    ctx.fillStyle = '#6e7681';
+    ctx.fillStyle = '#64748b';
     ctx.fillText('A · official', legendX + 8, legendY);
     ctx.fillStyle = colorB;
     ctx.fillText('●', legendX, legendY + 14);
-    ctx.fillStyle = '#6e7681';
+    ctx.fillStyle = '#64748b';
     ctx.fillText('B · dev', legendX + 8, legendY + 14);
 
     // Status badge
-    ctx.font = '11px system-ui';
+    ctx.font = '12px system-ui';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'alphabetic';
     const isRecording = this.recordingA || this.recordingB;
     const hasData = this.samplesA.length > 0 || this.samplesB.length > 0;
     if (isRecording) {
-      ctx.fillStyle = '#60a5fa';
+      ctx.fillStyle = '#2563eb';
       ctx.fillText('● recording', W - right, top - 8);
     } else if (hasData) {
-      ctx.fillStyle = '#34d399';
+      ctx.fillStyle = '#16a34a';
       ctx.fillText('✓ complete', W - right, top - 8);
     }
   }

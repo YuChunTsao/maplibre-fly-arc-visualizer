@@ -112,19 +112,8 @@ export function buildUI(
       params.mapMinZoom = raw === '' ? null : (isNaN(parseFloat(raw)) ? null : parseFloat(raw));
       notify();
     });
-    const lockBtn = document.createElement('button');
-    lockBtn.className = 'min-zoom-lock-btn';
-    lockBtn.textContent = 'apply';
-    let lockActive = false;
-    lockBtn.addEventListener('click', () => {
-      lockActive = !lockActive;
-      lockBtn.classList.toggle('active', lockActive);
-      lockBtn.textContent = lockActive ? 'applied' : 'apply';
-      callbacks.onMapMinZoomLock(lockActive);
-    });
     row.appendChild(lbl);
     row.appendChild(input);
-    row.appendChild(lockBtn);
     panel.appendChild(row);
   }
   panel.appendChild(
@@ -145,6 +134,21 @@ export function buildUI(
       notify();
     })
   );
+
+  const applyRow = el('div', 'apply-min-zoom-row');
+  const applyCheck = document.createElement('input');
+  applyCheck.type = 'checkbox';
+  applyCheck.id = 'apply-min-zoom-check';
+  applyCheck.checked = false;
+  applyCheck.addEventListener('change', () => {
+    callbacks.onMapMinZoomLock(applyCheck.checked);
+  });
+  const applyLabel = document.createElement('label');
+  applyLabel.htmlFor = 'apply-min-zoom-check';
+  applyLabel.textContent = 'apply mapMinZoom to map';
+  applyRow.appendChild(applyCheck);
+  applyRow.appendChild(applyLabel);
+  panel.appendChild(applyRow);
 
   // Run button
   panel.appendChild(sectionLabel('Run'));
