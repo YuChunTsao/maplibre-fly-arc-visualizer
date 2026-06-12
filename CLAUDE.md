@@ -13,7 +13,7 @@ Interactive visualization tool for comparing two versions of MapLibre GL's `flyT
 ## Commands
 
 ```bash
-npm run dev       # Dev server at http://localhost:5173/fly-arc-visualizer/
+npm run dev       # Dev server at http://localhost:5173/maplibre-fly-arc-visualizer/
 npm run build     # tsc then vite build → dist/
 npm run preview   # Preview the production build locally
 npm run format    # Prettier formatting
@@ -36,9 +36,9 @@ To compare your maplibre-gl changes against the official baseline:
    copy **all three** files into `libs/` — the shared and worker chunks are required
    (without the worker chunk, Version B's map renders blank):
    ```bash
-   cp dist/maplibre-gl-dev.mjs        ../fly-arc-visualizer/libs/maplibre-gl-compare.mjs
-   cp dist/maplibre-gl-shared-dev.mjs ../fly-arc-visualizer/libs/
-   cp dist/maplibre-gl-worker-dev.mjs ../fly-arc-visualizer/libs/
+   cp dist/maplibre-gl-dev.mjs        ../maplibre-fly-arc-visualizer/libs/maplibre-gl-compare.mjs
+   cp dist/maplibre-gl-shared-dev.mjs ../maplibre-fly-arc-visualizer/libs/
+   cp dist/maplibre-gl-worker-dev.mjs ../maplibre-fly-arc-visualizer/libs/
    ```
 
 3. Run the visualizer:

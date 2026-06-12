@@ -5,7 +5,7 @@ import path from 'path';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  base: '/fly-arc-visualizer/',
+  base: '/maplibre-fly-arc-visualizer/',
   resolve: {
     alias: [
       {

@@ -1,4 +1,4 @@
-# Fly Arc Visualizer
+# MapLibre Fly Arc Visualizer
 
 This repository is centered on an interactive playground that helps you experiment with and observe MapLibre GL `flyTo` animations in real time.
 
@@ -15,7 +15,7 @@ Key playground features
    npm install
 2. Start the dev server:
    npm run dev
-   Open: http://localhost:5173/fly-arc-visualizer/
+   Open: http://localhost:5173/maplibre-fly-arc-visualizer/
 3. Use the UI controls to set parameters and press Run. The playground will animate both maps and draw zoom curves for inspection.
 
 ## Quick commands
@@ -36,9 +36,9 @@ Steps to use a local MapLibre dev build for Version B (optional):
    cd ../maplibre-gl-js
    npm run build-dist
 2. Copy all required output files into this repo's `libs/` directory (all three files are required):
-   cp dist/maplibre-gl-dev.mjs ../fly-arc-visualizer/libs/maplibre-gl-compare.mjs
-   cp dist/maplibre-gl-shared-dev.mjs ../fly-arc-visualizer/libs/
-   cp dist/maplibre-gl-worker-dev.mjs ../fly-arc-visualizer/libs/
+   cp dist/maplibre-gl-dev.mjs ../maplibre-fly-arc-visualizer/libs/maplibre-gl-compare.mjs
+   cp dist/maplibre-gl-shared-dev.mjs ../maplibre-fly-arc-visualizer/libs/
+   cp dist/maplibre-gl-worker-dev.mjs ../maplibre-fly-arc-visualizer/libs/
 3. Restart the dev server and use the UI Run button. The playground will show A = official npm package, B = your local dev build.
 
 ## Key files
