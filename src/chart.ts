@@ -13,6 +13,7 @@ export class ZoomChart {
   private recordingB = false;
   private minZoomMarkers: Array<{ value: number | null; kind: 'flyto' | 'map' | 'none' }> = [];
   private observer: ResizeObserver;
+  private singleSeries = false;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -48,6 +49,11 @@ export class ZoomChart {
     } else {
       this.samplesB.push({ zoom, t, series: 'b' });
     }
+    this.redraw();
+  }
+
+  setSingleSeriesMode(enabled: boolean): void {
+    this.singleSeries = enabled;
     this.redraw();
   }
 
@@ -232,11 +238,13 @@ export class ZoomChart {
     ctx.fillStyle = colorA;
     ctx.fillText('●', legendX, legendY);
     ctx.fillStyle = '#64748b';
-    ctx.fillText('A · official', legendX + 8, legendY);
-    ctx.fillStyle = colorB;
-    ctx.fillText('●', legendX, legendY + 14);
-    ctx.fillStyle = '#64748b';
-    ctx.fillText('B · dev', legendX + 8, legendY + 14);
+    ctx.fillText(this.singleSeries ? 'official' : 'A · official', legendX + 8, legendY);
+    if (!this.singleSeries) {
+      ctx.fillStyle = colorB;
+      ctx.fillText('●', legendX, legendY + 14);
+      ctx.fillStyle = '#64748b';
+      ctx.fillText('B · dev', legendX + 8, legendY + 14);
+    }
 
     // Status badge
     ctx.font = '12px system-ui';

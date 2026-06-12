@@ -3,7 +3,7 @@ export type GlobalParams = {
   to: { center: [number, number]; zoom: number | null };
   // Independent optional settings. If null → use application/map default behavior.
   mapMinZoom: number | null;
-  flyToMinZoom: number | null;
+  minZoom: number | null;
   curve: number;
   speed: number;
 };
@@ -12,7 +12,7 @@ export const DEFAULT_PARAMS: GlobalParams = {
   from: { center: [139.6917, 35.6895], zoom: 10 },
   to: { center: [-0.1276, 51.5074], zoom: 10 },
   mapMinZoom: null,
-  flyToMinZoom: null,
+  minZoom: null,
   curve: 1.42,
   speed: 1.2,
 };
@@ -22,7 +22,7 @@ export function cloneParams(p: GlobalParams): GlobalParams {
     from: { center: [p.from.center[0], p.from.center[1]], zoom: p.from.zoom },
     to: { center: [p.to.center[0], p.to.center[1]], zoom: p.to.zoom },
     mapMinZoom: p.mapMinZoom,
-    flyToMinZoom: p.flyToMinZoom,
+    minZoom: p.minZoom,
     curve: p.curve,
     speed: p.speed,
   };

@@ -78,8 +78,8 @@ export function runScenario(
   };
 
   // Apply user-selected options independently: flyTo minZoom and/or map minZoom.
-  if (params.flyToMinZoom !== null && params.flyToMinZoom !== undefined) {
-    flyToOpts.minZoom = params.flyToMinZoom;
+  if (params.minZoom !== null && params.minZoom !== undefined) {
+    flyToOpts.minZoom = params.minZoom;
   }
 
   if (params.mapMinZoom !== null && params.mapMinZoom !== undefined) {

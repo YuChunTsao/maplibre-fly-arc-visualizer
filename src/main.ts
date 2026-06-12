@@ -19,50 +19,77 @@ let pendingProjection: 'mercator' | 'globe' | null = null;
 let globalParams: GlobalParams = cloneParams(DEFAULT_PARAMS);
 let mapMinZoomLockActive = false;
 let isSyncing = false;
+let mode: 'playground' | 'compare' = 'playground';
 
 const appEl = document.getElementById('app');
 if (!appEl) throw new Error('Missing #app');
 
-const { mapContainerA, mapContainerB, chartCanvas, setStatus, setUIProjection, setAnimating } =
-  buildUI(appEl, globalParams, {
-    onParamsChange(params) {
-      globalParams = params;
-      if (mapMinZoomLockActive) {
-        const v = globalParams.mapMinZoom ?? null;
-        mapA.setMinZoom(v);
-        mapB.setMinZoom(v);
-      }
-    },
-
-    onRun() {
-      if (isAnimating) return;
-      startScenario();
-    },
-
-    onMapMinZoomLock(active) {
-      mapMinZoomLockActive = active;
-      const v = active ? (globalParams.mapMinZoom ?? null) : null;
+const {
+  mapContainerA,
+  mapContainerB,
+  chartCanvas,
+  setStatus,
+  setUIProjection,
+  setAnimating,
+  setCodeOutput,
+  setMode,
+} = buildUI(appEl, globalParams, {
+  onParamsChange(params) {
+    globalParams = params;
+    if (mapMinZoomLockActive) {
+      const v = globalParams.mapMinZoom ?? null;
       mapA.setMinZoom(v);
-      mapB.setMinZoom(v);
-    },
+      if (mode === 'compare') mapB.setMinZoom(v);
+    }
+  },
 
-    onProjectionToggle(p) {
-      if (isAnimating) return;
-      setUIProjection(p);
-      if (mapA.isStyleLoaded()) {
-        applyProjection(mapA, p);
-      } else {
-        pendingProjection = p;
-      }
-      if (mapB.isStyleLoaded()) {
-        applyProjection(mapB, p);
-      }
-    },
-  });
+  onRun() {
+    if (isAnimating) return;
+    startScenario();
+  },
+
+  onMapMinZoomLock(active) {
+    mapMinZoomLockActive = active;
+    const v = active ? (globalParams.mapMinZoom ?? null) : null;
+    mapA.setMinZoom(v);
+    if (mode === 'compare') mapB.setMinZoom(v);
+  },
+
+  onProjectionToggle(p) {
+    if (isAnimating) return;
+    setUIProjection(p);
+    if (mapA.isStyleLoaded()) {
+      applyProjection(mapA, p);
+    } else {
+      pendingProjection = p;
+    }
+    if (mapB.isStyleLoaded()) {
+      applyProjection(mapB, p);
+    }
+  },
+
+  onModeChange(newMode) {
+    mode = newMode;
+    setMode(newMode);
+    chart.setSingleSeriesMode(newMode === 'playground');
+    if (newMode === 'compare') {
+      mapB.jumpTo({
+        center: mapA.getCenter(),
+        zoom: mapA.getZoom(),
+        bearing: mapA.getBearing(),
+        pitch: mapA.getPitch(),
+      });
+      attachSync();
+    } else {
+      detachSync();
+    }
+  },
+});
 
 const mapA = createMap(mapContainerA, maplibreglA, '#60a5fa');
 const mapB = createMap(mapContainerB, maplibreglB, '#f97316');
 const chart = new ZoomChart(chartCanvas);
+chart.setSingleSeriesMode(true);
 
 function syncAtoB() {
   if (isSyncing || isAnimating) return;
@@ -78,8 +105,33 @@ function syncBtoA() {
   isSyncing = false;
 }
 
-function attachSync() { mapA.on('move', syncAtoB); mapB.on('move', syncBtoA); }
-function detachSync() { mapA.off('move', syncAtoB); mapB.off('move', syncBtoA); }
+function attachSync() {
+  if (mode === 'compare') {
+    mapA.on('move', syncAtoB);
+    mapB.on('move', syncBtoA);
+  }
+}
+function detachSync() {
+  mapA.off('move', syncAtoB);
+  mapB.off('move', syncBtoA);
+}
+
+function generateCodeSnippet(params: GlobalParams): string {
+  const { center, zoom } = params.to;
+  const lines: string[] = ['map.flyTo({'];
+  lines.push(`  center: [${center[0]}, ${center[1]}],`);
+  if (zoom !== null) lines.push(`  zoom: ${zoom},`);
+  lines.push(`  curve: ${params.curve},`);
+  lines.push(`  speed: ${params.speed},`);
+  if (params.minZoom !== null) lines.push(`  minZoom: ${params.minZoom},`);
+  lines.push('});');
+  if (params.mapMinZoom !== null) {
+    lines.push('');
+    lines.push('// Set separately — affects flight ceiling');
+    lines.push(`map.setMinZoom(${params.mapMinZoom});`);
+  }
+  return lines.join('\n');
+}
 
 function startScenario(): void {
   // Build an array of minZoom markers to pass to the chart (support both map and flyto simultaneously)
@@ -87,53 +139,58 @@ function startScenario(): void {
   if (globalParams.mapMinZoom !== null && globalParams.mapMinZoom !== undefined) {
     markers.push({ value: globalParams.mapMinZoom, kind: 'map' });
   }
-  if (globalParams.flyToMinZoom !== null && globalParams.flyToMinZoom !== undefined) {
-    markers.push({ value: globalParams.flyToMinZoom, kind: 'flyto' });
+  if (globalParams.minZoom !== null && globalParams.minZoom !== undefined) {
+    markers.push({ value: globalParams.minZoom, kind: 'flyto' });
   }
-  // If no markers, pass an empty array (chart will show defaults when appropriate)
   chart.startRecording(markers as any);
   setStatus('Running…');
   isAnimating = true;
   setAnimating(true);
   detachSync();
 
-  let doneA = false;
-  let doneB = false;
-
-  const onAnimationEnd = () => {
-    if (doneA && doneB) {
-      isAnimating = false;
-      setAnimating(false);
-      chart.stopRecording();
-      attachSync();
-      setStatus('Complete');
-      if (mapMinZoomLockActive && globalParams.mapMinZoom !== null) {
-        mapA.setMinZoom(globalParams.mapMinZoom);
-        mapB.setMinZoom(globalParams.mapMinZoom);
+  if (mode === 'playground') {
+    runScenario(
+      mapA,
+      globalParams,
+      (zoom, t) => chart.addSample(zoom, t, 'a'),
+      () => {
+        isAnimating = false;
+        setAnimating(false);
+        chart.stopRecording();
+        setStatus('Complete');
+        if (mapMinZoomLockActive && globalParams.mapMinZoom !== null) {
+          mapA.setMinZoom(globalParams.mapMinZoom);
+        }
+        setCodeOutput(generateCodeSnippet(globalParams));
       }
-    }
-  };
+    );
+  } else {
+    let doneA = false;
+    let doneB = false;
 
-  // Run both scenarios in parallel
-  runScenario(
-    mapA,
-    globalParams,
-    (zoom, t) => chart.addSample(zoom, t, 'a'),
-    () => {
+    const onAnimationEnd = () => {
+      if (doneA && doneB) {
+        isAnimating = false;
+        setAnimating(false);
+        chart.stopRecording();
+        attachSync();
+        setStatus('Complete');
+        if (mapMinZoomLockActive && globalParams.mapMinZoom !== null) {
+          mapA.setMinZoom(globalParams.mapMinZoom);
+          mapB.setMinZoom(globalParams.mapMinZoom);
+        }
+      }
+    };
+
+    runScenario(mapA, globalParams, (zoom, t) => chart.addSample(zoom, t, 'a'), () => {
       doneA = true;
       onAnimationEnd();
-    }
-  );
-
-  runScenario(
-    mapB,
-    globalParams,
-    (zoom, t) => chart.addSample(zoom, t, 'b'),
-    () => {
+    });
+    runScenario(mapB, globalParams, (zoom, t) => chart.addSample(zoom, t, 'b'), () => {
       doneB = true;
       onAnimationEnd();
-    }
-  );
+    });
+  }
 }
 
 let mapsLoaded = 0;

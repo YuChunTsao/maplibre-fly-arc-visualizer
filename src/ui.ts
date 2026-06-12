@@ -6,6 +6,7 @@ export type UICallbacks = {
   onProjectionToggle: (projection: 'mercator' | 'globe') => void;
   onParamsChange: (params: GlobalParams) => void;
   onMapMinZoomLock: (active: boolean) => void;
+  onModeChange: (mode: 'playground' | 'compare') => void;
 };
 
 export type UIControls = {
@@ -15,6 +16,8 @@ export type UIControls = {
   setStatus: (msg: string) => void;
   setUIProjection: (p: 'mercator' | 'globe') => void;
   setAnimating: (animating: boolean) => void;
+  setCodeOutput: (code: string) => void;
+  setMode: (mode: 'playground' | 'compare') => void;
 };
 
 export function buildUI(
@@ -28,6 +31,17 @@ export function buildUI(
   const titleEl = el('h1', 'title');
   titleEl.textContent = 'flyTo Arc Visualizer';
   panel.appendChild(titleEl);
+
+  // Mode toggle
+  let currentMode: 'playground' | 'compare' = 'playground';
+  const modeBtn = document.createElement('button');
+  modeBtn.className = 'mode-toggle-btn';
+  modeBtn.textContent = 'Compare Mode →';
+  modeBtn.addEventListener('click', () => {
+    const newMode = currentMode === 'playground' ? 'compare' : 'playground';
+    callbacks.onModeChange(newMode);
+  });
+  panel.appendChild(modeBtn);
 
   // Projection toggle
   panel.appendChild(sectionLabel('Projection'));
@@ -100,7 +114,11 @@ export function buildUI(
   {
     const row = el('div', 'param-row');
     const lbl = el('span', 'param-label');
-    lbl.textContent = 'mapMinZoom';
+    const lblText = document.createTextNode('mapMinZoom');
+    const hint = el('span', 'param-hint');
+    hint.textContent = ' (via map.setMinZoom())';
+    lbl.appendChild(lblText);
+    lbl.appendChild(hint);
     const input = document.createElement('input');
     input.type = 'number';
     input.className = 'param-input';
@@ -117,8 +135,8 @@ export function buildUI(
     panel.appendChild(row);
   }
   panel.appendChild(
-    optParamRow('flyToMinZoom', params.flyToMinZoom, (v) => {
-      params.flyToMinZoom = v;
+    optParamRow('minZoom', params.minZoom, (v) => {
+      params.minZoom = v;
       notify();
     })
   );
@@ -179,7 +197,7 @@ export function buildUI(
 
   const mapAWrapper = el('div', 'map-wrapper');
   const mapALabel = el('div', 'map-label');
-  mapALabel.textContent = 'A · official';
+  mapALabel.textContent = 'official';
   const mapContainerA = el('div', 'map-container');
   mapContainerA.id = 'map-a';
   mapAWrapper.appendChild(mapALabel);
@@ -187,6 +205,7 @@ export function buildUI(
   mapsContainer.appendChild(mapAWrapper);
 
   const mapBWrapper = el('div', 'map-wrapper');
+  mapBWrapper.style.display = 'none'; // hidden in playground mode by default
   const mapBLabel = el('div', 'map-label');
   mapBLabel.textContent = 'B · dev';
   const mapContainerB = el('div', 'map-container');
@@ -200,6 +219,29 @@ export function buildUI(
   const chartCanvas = document.createElement('canvas');
   chartCanvas.className = 'chart-canvas';
   right.appendChild(chartCanvas);
+
+  // Code output section (playground mode only)
+  const codeOutputSection = el('div', 'code-output-section');
+  const codeHeader = el('div', 'code-output-header');
+  const codeTitleSpan = el('span', 'code-output-title');
+  codeTitleSpan.textContent = 'flyTo Code';
+  const copyBtn = document.createElement('button');
+  copyBtn.className = 'copy-btn';
+  copyBtn.textContent = 'Copy';
+  copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(codeEl.textContent ?? '').then(() => {
+      copyBtn.textContent = 'Copied!';
+      setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
+    });
+  });
+  codeHeader.appendChild(codeTitleSpan);
+  codeHeader.appendChild(copyBtn);
+  const codeEl = document.createElement('pre');
+  codeEl.className = 'code-output';
+  codeEl.textContent = '// Run animation to generate code';
+  codeOutputSection.appendChild(codeHeader);
+  codeOutputSection.appendChild(codeEl);
+  right.appendChild(codeOutputSection);
 
   appEl.appendChild(panel);
   appEl.appendChild(right);
@@ -222,6 +264,16 @@ export function buildUI(
     setAnimating(animating) {
       runBtn.disabled = animating;
       for (const btn of Object.values(projBtns)) (btn as HTMLButtonElement).disabled = animating;
+    },
+    setCodeOutput(code) {
+      codeEl.textContent = code;
+    },
+    setMode(mode) {
+      currentMode = mode;
+      modeBtn.textContent = mode === 'playground' ? 'Compare Mode →' : '← Playground';
+      mapBWrapper.style.display = mode === 'compare' ? '' : 'none';
+      mapALabel.textContent = mode === 'compare' ? 'A · official' : 'official';
+      codeOutputSection.style.display = mode === 'playground' ? '' : 'none';
     },
   };
 }
