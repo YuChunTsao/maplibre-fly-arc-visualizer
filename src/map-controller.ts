@@ -82,6 +82,14 @@ export function runScenario(
     flyToOpts.minZoom = params.minZoom;
   }
 
+  if (params.maxDuration !== null && params.maxDuration !== undefined) {
+    flyToOpts.maxDuration = params.maxDuration;
+  }
+
+  if (params.duration !== null && params.duration !== undefined) {
+    flyToOpts.duration = params.duration;
+  }
+
   if (params.mapMinZoom !== null && params.mapMinZoom !== undefined) {
     map.setMinZoom(params.mapMinZoom);
   }

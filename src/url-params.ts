@@ -27,6 +27,8 @@ export function loadFromHash(): UrlState | null {
         to: { center: [toLng, toLat], zoom: opt(p, 'toZoom') },
         mapMinZoom: opt(p, 'mapMinZoom'),
         minZoom: opt(p, 'minZoom'),
+        maxDuration: opt(p, 'maxDuration'),
+        duration: opt(p, 'duration'),
         curve,
         speed,
       },
@@ -54,6 +56,8 @@ export function saveToHash(
   if (params.to.zoom !== null) p.set('toZoom', String(params.to.zoom));
   if (params.mapMinZoom !== null) p.set('mapMinZoom', String(params.mapMinZoom));
   if (params.minZoom !== null) p.set('minZoom', String(params.minZoom));
+  if (params.maxDuration !== null) p.set('maxDuration', String(params.maxDuration));
+  if (params.duration !== null) p.set('duration', String(params.duration));
   p.set('curve', String(params.curve));
   p.set('speed', String(params.speed));
   history.replaceState(null, '', '#' + p.toString());

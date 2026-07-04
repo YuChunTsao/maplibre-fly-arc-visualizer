@@ -137,6 +137,8 @@ function generateCodeSnippet(params: GlobalParams): string {
   lines.push(`  curve: ${params.curve},`);
   lines.push(`  speed: ${params.speed},`);
   if (params.minZoom !== null) lines.push(`  minZoom: ${params.minZoom},`);
+  if (params.maxDuration !== null) lines.push(`  maxDuration: ${params.maxDuration},`);
+  if (params.duration !== null) lines.push(`  duration: ${params.duration},`);
   lines.push('});');
   if (params.mapMinZoom !== null) {
     lines.push('');

@@ -1,10 +1,10 @@
 /**
 * MapLibre GL JS
-* @license 3-Clause BSD. Full text of license: https://github.com/maplibre/maplibre-gl-js/blob/v6.0.0-14/LICENSE.txt
+* @license 3-Clause BSD. Full text of license: https://github.com/maplibre/maplibre-gl-js/blob/v6.0.0-17/LICENSE.txt
 */
 import { $n as filterObject, $r as normalize, $t as validateSky, A as earthRadius, Ai as rotate, An as throwIfAborted, Ar as uniqueId, At as UniformMatrix4f, B as evaluateSizeForFeature, Bn as createIdentityMat4f64, Br as transformMat4$2, Bt as createLayout, C as altitudeFromMercatorZ, Ci as rotateZ, Cn as sameOrigin, Cr as rollPitchBearingEqual, Ct as Uniform1i, D as mercatorYfromLat, Di as fromRotation, Dn as config, Dr as subscribe, Dt as UniformColor, E as mercatorXfromLng, Ei as create$4, En as removeProtocol, Er as sphericalToCartesian, Et as Uniform4f, F as isBackgroundStyleLayer, Fn as arrayBufferToImageBitmap, Fr as EXTENT, Ft as Pos3dArray, G as ImagePosition, Gn as defaultEasing, Gr as scale$3, Gt as Transitionable, Hn as createVec3f64, Hr as fromEuler, Ht as DataConstantProperty, I as isSymbolStyleLayer, In as bezier, Ir as create$3, It as PosArray, J as parseGlyphPbf, Jn as distanceOfAnglesRadians, Jr as clone, Jt as codePointUsesLocalIdeographFontFamily, K as potpack, Kn as degreesToRadians, Kr as transformMat4, Kt as EvaluationParameters, L as SymbolBucket, Ln as clamp, Lr as length, Lt as QuadTriangleArray, M as createStyleLayer, Mi as offscreenCanvasSupported, Mn as MAX_VALID_LATITUDE, Mr as wrap, Mt as CollisionBoxArray, N as isCustomStyleLayer, Ni as Point, Nn as angleToRotateBetweenVectors2D, Nr as zoomScale, Nt as CollisionCircleLayoutArray, O as mercatorZfromAltitude, Oi as create$2, On as AbortError, Or as threePlaneIntersection, Ot as UniformColorArray, P as validateCustomStyleLayer, Pn as arrayBufferToImage, Pr as pixelsToTileUnits, Pt as LineStripIndexArray, Qn as extend, Qr as length$1, Qt as validateLight, R as addDynamicAttributes, Rn as clone$2, Rr as scale$1, Rt as RasterBoundsArray, S as MercatorCoordinate, Si as rotateY$1, Sn as makeRequest, Sr as remapSaturate, St as Uniform1f, T as lngFromMercatorX, Ti as translate, Tn as getProtocol, Tr as scaleZoom, Tt as Uniform3f, U as getAnchorAlignment, Un as createVec4f64, Ur as slerp, Ut as Properties, V as evaluateSizeForZoom, Vn as createMat4f64, Vr as zero, Vt as isRasterStyleLayer, Wn as deepEqual, Wr as mul, Wt as TRANSITION_SUFFIX, X as collisionCircleLayout, Xn as ensureError, Xr as dot, Yn as easeCubicInOut, Yr as cross, Yt as ZoomHistory, Z as isLineStyleLayer, Zn as evaluateZoomSnap, Zr as len, Zt as emitValidationErrors$1, _ as OverscaledTileID, _i as invert$1, _n as GLOBAL_DISPATCHER_ID, _r as pick, _t as AlphaImage, a as clipLine, ai as sub, an as derefLayers, ar as getRollPitchBearing, b as compareTileId, bi as perspective, bn as getReferrer, br as rayPlaneIntersection, bt as polygonIntersectsPolygon, ci as transformQuat, cn as featureFilter, cr as isSafari, ct as SubdivisionGranularityExpression, di as copy, dn as latest_default, dr as isWorker, ei as rotateX$1, en as validateStyle, er as findLineIntersection, et as KDBush, f as GEOJSON_TILE_LAYER_NAME, fi as create$1, fn as v8, fr as lerp, ft as Texture, g as CanonicalTileID, gi as identity, gn as AJAXError, gr as parseCacheControl, gt as renderColorRamp, h as Bounds, hi as fromScaling, hn as Evented, hr as nextPowerOfTwo, ht as isHeatmapStyleLayer, ii as scaleAndAdd, it as isFillStyleLayer, j as Actor, ji as isOffscreenCanvasDistorted, jr as warnOnce, jt as SegmentVector, k as LngLat, ki as invert, kn as isAbortError, kr as translatePosition, kt as UniformFloatArray, li as zero$1, lr as isTouchableEvent, lt as SubdivisionGranularitySetting, mi as exactEquals, mn as Event, mr as mod, mt as HEATMAP_FULL_RENDER_FBO_KEY, ni as rotateZ$1, nn as ProjectionDefinition, nr as getAngleDelta, oi as transformMat3, on as diff, or as isImageBitmap, ot as NORTH_POLE_Y, pi as equals, pn as ErrorEvent, pr as mapObject, pt as isHillshadeStyleLayer, q as renderStyleImage, qn as differenceOfAnglesDegrees, qr as add, r as TextAnchorEnum, ri as scale$2, rn as ValidationError, rr as getEdgeTiles, s as TileCache, si as transformMat4$1, sn as emptyStyle, sr as isPointableEvent, st as SOUTH_POLE_Y, t as getAnchorJustification, ti as rotateY, tn as Color, tr as getAABB, tt as isFillExtrusionStyleLayer, u as GeoJSONFeature, ui as clone$1, un as interpolateFactory, ur as isTouchableOrPointableType, ut as isColorReliefStyleLayer, v as UnwrappedTileID, vi as multiply, vn as getArrayBuffer, vr as pointPlaneSignedDistance, vt as RGBAImage, w as latFromMercatorY, wi as scale, wn as addProtocol, wr as rollPitchBearingToQuat, wt as Uniform2f, x as isInBoundsForZoomLngLat, xi as rotateX, xn as getVideo, xr as readImageUsingVideoFrame, xt as toEvaluationFeature, y as calculateTileKey, yi as ortho, yn as getJSON, yr as radiansToDegrees, yt as isCircleStyleLayer, z as getOverlapMode, zn as createIdentityMat4f32, zr as sqrLen, zt as TriangleIndexArray } from "./maplibre-gl-shared-dev.mjs";
 //#region package.json
-var version$2 = "6.0.0-14";
+var version$2 = "6.0.0-17";
 //#endregion
 //#region src/util/browser.ts
 let linkEl;
@@ -428,6 +428,237 @@ var RequestManager = class {
 	}
 };
 //#endregion
+//#region src/ui/events.ts
+/**
+* The base event for MapLibre
+*
+* @group Event Related
+*/
+var MapLibreEvent = class extends Event {};
+/**
+* `MapMovementEvent` is the event type for the camera-transition map events:
+* `movestart`, `move`, `moveend`, `zoomstart`, `zoom`, `zoomend`, `rotatestart`, `rotate`, `rotateend`,
+* `dragstart`, `drag`, `dragend`, `pitchstart`, `pitch`, `pitchend`, `rollstart`, `roll` and `rollend`.
+* These are fired as the map's view changes, as a result of either user interaction or methods such
+* as {@link Map.jumpTo} / {@link Map.flyTo}.
+*
+* @group Event Related
+*/
+var MapMovementEvent = class extends MapLibreEvent {};
+/**
+* The `style.load` event, fired once the map's style has fully loaded or changed.
+*
+* @group Event Related
+*/
+var MapStyleLoadEvent = class extends MapLibreEvent {
+	constructor(data = {}) {
+		super("style.load", data);
+	}
+};
+/**
+* The style data event
+*
+* @group Event Related
+*/
+var MapStyleDataEvent = class extends MapLibreEvent {
+	constructor(type, data = {}) {
+		super(type, data);
+		this.dataType = "style";
+	}
+};
+/**
+* A `MapSourceDataEvent` is emitted with the source-related `data`, `dataloading`, `dataabort`,
+* `sourcedata`, `sourcedataloading` and `sourcedataabort` events. Its `dataType` is always `'source'`.
+*
+* Possible values for `sourceDataType`s are:
+*
+* - `'metadata'`: indicates that any necessary source metadata has been loaded (such as TileJSON) and it is ok to start loading tiles
+* - `'content'`: indicates the source data has changed (such as when source.setData() has been called on GeoJSONSource)
+* - `'visibility'`: send when the source becomes used when at least one of its layers becomes visible in style sense (inside the layer's zoom range and with layout.visibility set to 'visible')
+* - `'idle'`: indicates that no new source data has been fetched (but the source has done loading)
+*
+* @group Event Related
+*
+* @example
+* ```ts
+* // The sourcedata event is an example of a MapSourceDataEvent.
+* // Set up an event listener on the map.
+* map.on('sourcedata', (e) => {
+*    if (e.isSourceLoaded) {
+*        // Do something when the source has finished loading
+*    }
+* });
+* ```
+*/
+var MapSourceDataEvent = class extends MapLibreEvent {
+	constructor(type, data = {}) {
+		super(type, data);
+		this.dataType = "source";
+	}
+};
+/**
+* `MapMouseEvent` is the event type for mouse-related map events.
+*
+* @group Event Related
+*
+* @example
+* ```ts
+* // The `click` event is an example of a `MapMouseEvent`.
+* // Set up an event listener on the map.
+* map.on('click', (e) => {
+*   // The event object (e) contains information like the
+*   // coordinates of the point on the map that was clicked.
+*   console.log('A click event has occurred at ' + e.lngLat);
+* });
+* ```
+*/
+var MapMouseEvent = class extends MapLibreEvent {
+	/**
+	* Prevents subsequent default processing of the event by the map.
+	*
+	* Calling this method will prevent the following default map behaviors:
+	*
+	*   * On `mousedown` events, the behavior of {@link DragPanHandler}
+	*   * On `mousedown` events, the behavior of {@link DragRotateHandler}
+	*   * On `mousedown` events, the behavior of {@link BoxZoomHandler}
+	*   * On `dblclick` events, the behavior of {@link DoubleClickZoomHandler}
+	*
+	*/
+	preventDefault() {
+		this._defaultPrevented = true;
+	}
+	/**
+	* `true` if `preventDefault` has been called.
+	*/
+	get defaultPrevented() {
+		return this._defaultPrevented;
+	}
+	constructor(type, map, originalEvent, data = {}) {
+		originalEvent = originalEvent instanceof MouseEvent ? originalEvent : new MouseEvent(type, originalEvent);
+		const point = DOM.mousePos(map.getCanvas(), originalEvent);
+		const lngLat = map.unproject(point);
+		super(type, extend({
+			point,
+			lngLat,
+			originalEvent
+		}, data));
+		this._defaultPrevented = false;
+		this.target = map;
+	}
+};
+/**
+* `MapTouchEvent` is the event type for touch-related map events.
+*
+* @group Event Related
+*/
+var MapTouchEvent = class extends MapLibreEvent {
+	/**
+	* Prevents subsequent default processing of the event by the map.
+	*
+	* Calling this method will prevent the following default map behaviors:
+	*
+	*   * On `touchstart` events, the behavior of {@link DragPanHandler}
+	*   * On `touchstart` events, the behavior of {@link TwoFingersTouchZoomRotateHandler}
+	*
+	*/
+	preventDefault() {
+		this._defaultPrevented = true;
+	}
+	/**
+	* `true` if `preventDefault` has been called.
+	*/
+	get defaultPrevented() {
+		return this._defaultPrevented;
+	}
+	constructor(type, map, originalEvent) {
+		const touches = type === "touchend" ? originalEvent.changedTouches : originalEvent.touches;
+		const points = DOM.touchPos(map.getCanvasContainer(), touches);
+		const lngLats = points.map((t) => map.unproject(t));
+		const point = points.reduce((prev, curr, i, arr) => {
+			return prev.add(curr.div(arr.length));
+		}, new Point(0, 0));
+		const lngLat = map.unproject(point);
+		super(type, {
+			points,
+			point,
+			lngLats,
+			lngLat,
+			originalEvent
+		});
+		this._defaultPrevented = false;
+	}
+};
+/**
+* `MapWheelEvent` is the event type for the `wheel` map event.
+*
+* @group Event Related
+*/
+var MapWheelEvent = class extends MapLibreEvent {
+	/**
+	* Prevents subsequent default processing of the event by the map.
+	*
+	* Calling this method will prevent the behavior of {@link ScrollZoomHandler}.
+	*/
+	preventDefault() {
+		this._defaultPrevented = true;
+	}
+	/**
+	* `true` if `preventDefault` has been called.
+	*/
+	get defaultPrevented() {
+		return this._defaultPrevented;
+	}
+	/** */
+	constructor(map, originalEvent) {
+		super("wheel", { originalEvent });
+		this._defaultPrevented = false;
+	}
+};
+/**
+* A `MapBoxZoomEvent` is the event type for the boxzoom-related map events emitted by the {@link BoxZoomHandler}.
+*
+* @group Event Related
+*/
+var MapBoxZoomEvent = class extends MapLibreEvent {};
+/**
+* The terrain event
+*
+* @group Event Related
+*/
+var MapTerrainEvent = class extends MapLibreEvent {
+	constructor(data = {}) {
+		super("terrain", data);
+	}
+};
+/**
+* The map projection event
+*
+* @group Event Related
+*/
+var MapProjectionEvent = class extends MapLibreEvent {
+	constructor(data = {}) {
+		super("projectiontransition", data);
+	}
+};
+/**
+* An event related to the web gl context
+*
+* @group Event Related
+*/
+var MapContextEvent = class extends MapLibreEvent {};
+/**
+* The style image missing event
+*
+* @group Event Related
+*
+* @see [Generate and add a missing icon to the map](https://maplibre.org/maplibre-gl-js/docs/examples/generate-and-add-a-missing-icon-to-the-map/)
+*/
+var MapStyleImageMissingEvent = class extends MapLibreEvent {
+	constructor(data = {}) {
+		super("styleimagemissing", data);
+	}
+};
+//#endregion
 //#region src/util/style.ts
 /**
 * Takes a SpriteSpecification value and returns it in its array form. If `undefined` is passed as an input value, an
@@ -663,7 +894,7 @@ var ImageManager = class extends Evented {
 		for (const id of ids) {
 			let image = this.getImage(id);
 			if (!image) {
-				this.fire(new Event("styleimagemissing", { id }));
+				this.fire(new MapStyleImageMissingEvent({ id }));
 				image = this.getImage(id);
 			}
 			if (image) response[id] = {
@@ -1475,10 +1706,22 @@ async function fetchAsBlobUrl(url) {
 	const blob = new Blob([code], { type: "text/javascript" });
 	return URL.createObjectURL(blob);
 }
+function importAsBlobUrl(url) {
+	const blob = new Blob([`import ${JSON.stringify(new URL(url, import.meta.url).href)}`], { type: "text/javascript" });
+	return URL.createObjectURL(blob);
+}
 async function workerFactory() {
 	const url = config.WORKER_URL || defaultWorkerUrl();
 	const asModule = url?.endsWith(".cjs") ? false : true;
 	if (!isCrossOrigin(url)) return createWorker(url, asModule);
+	if (asModule) {
+		const blobUrl = importAsBlobUrl(url);
+		try {
+			return createWorker(blobUrl, asModule);
+		} finally {
+			URL.revokeObjectURL(blobUrl);
+		}
+	}
 	const blobUrl = await fetchAsBlobUrl(url);
 	try {
 		return createWorker(blobUrl, asModule);
@@ -2222,7 +2465,7 @@ var VectorTileSource = class extends Evented {
 	}
 	async load(sourceDataChanged = false) {
 		this._loaded = false;
-		this.fire(new Event("dataloading", { dataType: "source" }));
+		this.fire(new MapSourceDataEvent("dataloading"));
 		this._tileJSONRequest = new AbortController();
 		try {
 			const tileJSON = await loadTileJson(this._options, this.map._requestManager, this._tileJSONRequest, this.map._ownerWindow);
@@ -2231,12 +2474,8 @@ var VectorTileSource = class extends Evented {
 			if (tileJSON) {
 				extend(this, tileJSON);
 				if (tileJSON.bounds) this.tileBounds = new TileBounds(tileJSON.bounds, this.minzoom, this.maxzoom);
-				this.fire(new Event("data", {
-					dataType: "source",
-					sourceDataType: "metadata"
-				}));
-				this.fire(new Event("data", {
-					dataType: "source",
+				this.fire(new MapSourceDataEvent("data", { sourceDataType: "metadata" }));
+				this.fire(new MapSourceDataEvent("data", {
 					sourceDataType: "content",
 					sourceDataChanged
 				}));
@@ -2338,7 +2577,7 @@ var VectorTileSource = class extends Evented {
 			return result;
 		} catch (err) {
 			delete tile.abortController;
-			if (tile.aborted) return;
+			if (tile.aborted || isAbortError(err)) return;
 			if (err && err.status !== 404) throw err;
 			this._afterTileLoadWorkerResponse(tile, null);
 		}
@@ -2452,7 +2691,7 @@ var RasterTileSource = class extends Evented {
 	}
 	async load(sourceDataChanged = false) {
 		this._loaded = false;
-		this.fire(new Event("dataloading", { dataType: "source" }));
+		this.fire(new MapSourceDataEvent("dataloading"));
 		this._tileJSONRequest = new AbortController();
 		try {
 			const tileJSON = await loadTileJson(this._options, this.map._requestManager, this._tileJSONRequest, this.map._ownerWindow);
@@ -2461,12 +2700,8 @@ var RasterTileSource = class extends Evented {
 			if (tileJSON) {
 				extend(this, tileJSON);
 				if (tileJSON.bounds) this.tileBounds = new TileBounds(tileJSON.bounds, this.minzoom, this.maxzoom);
-				this.fire(new Event("data", {
-					dataType: "source",
-					sourceDataType: "metadata"
-				}));
-				this.fire(new Event("data", {
-					dataType: "source",
+				this.fire(new MapSourceDataEvent("data", { sourceDataType: "metadata" }));
+				this.fire(new MapSourceDataEvent("data", {
 					sourceDataType: "content",
 					sourceDataChanged
 				}));
@@ -3253,7 +3488,7 @@ var GeoJSONSource = class extends Evented {
 	*/
 	async _dispatchWorkerUpdate(optionsPromise) {
 		this._isUpdatingWorker = true;
-		this.fire(new Event("dataloading", { dataType: "source" }));
+		this.fire(new MapSourceDataEvent("dataloading"));
 		try {
 			const options = await optionsPromise;
 			const result = await (await this.actorPromise).sendAsync({
@@ -3262,19 +3497,19 @@ var GeoJSONSource = class extends Evented {
 			});
 			this._isUpdatingWorker = false;
 			if (this._removed || result.abandoned) {
-				this.fire(new Event("dataabort", { dataType: "source" }));
+				this.fire(new MapSourceDataEvent("dataabort"));
 				return;
 			}
 			if (result.data) this._data = { geojson: result.data };
 			const affectedGeometries = this._applyDiffToSource(options.dataDiff);
 			const shouldReloadTileOptions = this._getShouldReloadTileOptions(affectedGeometries);
-			const eventData = { dataType: "source" };
+			const eventData = {};
 			this._applyResourceTiming(eventData, result);
-			this.fire(new Event("data", {
+			this.fire(new MapSourceDataEvent("data", {
 				...eventData,
 				sourceDataType: "metadata"
 			}));
-			this.fire(new Event("data", {
+			this.fire(new MapSourceDataEvent("data", {
 				...eventData,
 				sourceDataType: "content",
 				shouldReloadTileOptions
@@ -3282,7 +3517,7 @@ var GeoJSONSource = class extends Evented {
 		} catch (err) {
 			this._isUpdatingWorker = false;
 			if (this._removed) {
-				this.fire(new Event("dataabort", { dataType: "source" }));
+				this.fire(new MapSourceDataEvent("dataabort"));
 				return;
 			}
 			this.fire(new ErrorEvent(ensureError(err)));
@@ -3360,13 +3595,19 @@ var GeoJSONSource = class extends Evented {
 			subdivisionGranularity: this.map.style.projection.subdivisionGranularity
 		};
 		tile.abortController = new AbortController();
-		const data = await (await this.actorPromise).sendAsync({
-			type: message,
-			data: params
-		}, tile.abortController);
-		delete tile.abortController;
-		tile.unloadVectorData();
-		if (!tile.aborted) tile.loadVectorData(data, this.map.painter, message === "RT");
+		try {
+			const data = await (await this.actorPromise).sendAsync({
+				type: message,
+				data: params
+			}, tile.abortController);
+			delete tile.abortController;
+			tile.unloadVectorData();
+			if (!tile.aborted) tile.loadVectorData(data, this.map.painter, message === "RT");
+		} catch (err) {
+			delete tile.abortController;
+			if (tile.aborted || isAbortError(err)) return;
+			throw err;
+		}
 	}
 	async abortTile(tile) {
 		if (tile.abortController) {
@@ -3473,7 +3714,7 @@ var ImageSource = class extends Evented {
 	}
 	async load(newCoordinates) {
 		this._loaded = false;
-		this.fire(new Event("dataloading", { dataType: "source" }));
+		this.fire(new MapSourceDataEvent("dataloading"));
 		this.url = this.options.url;
 		this._request = new AbortController();
 		try {
@@ -3513,10 +3754,7 @@ var ImageSource = class extends Evented {
 	_finishLoading() {
 		if (this.map) {
 			this.setCoordinates(this.coordinates);
-			this.fire(new Event("data", {
-				dataType: "source",
-				sourceDataType: "metadata"
-			}));
+			this.fire(new MapSourceDataEvent("data", { sourceDataType: "metadata" }));
 		}
 	}
 	onAdd(map) {
@@ -3545,10 +3783,7 @@ var ImageSource = class extends Evented {
 		this.minzoom = this.maxzoom = this.tileID.z;
 		this.tileCoords = cornerCoords.map((coord) => this.tileID.getTilePoint(coord)._round());
 		this.flippedWindingOrder = hasWrongWindingOrder(this.tileCoords);
-		this.fire(new Event("data", {
-			dataType: "source",
-			sourceDataType: "content"
-		}));
+		this.fire(new MapSourceDataEvent("data", { sourceDataType: "content" }));
 		return this;
 	}
 	prepare() {
@@ -3568,8 +3803,7 @@ var ImageSource = class extends Evented {
 				newTilesLoaded = true;
 			}
 		}
-		if (newTilesLoaded) this.fire(new Event("data", {
-			dataType: "source",
+		if (newTilesLoaded) this.fire(new MapSourceDataEvent("data", {
 			sourceDataType: "idle",
 			sourceId: this.id
 		}));
@@ -3778,8 +4012,7 @@ var VideoSource = class extends ImageSource {
 				newTilesLoaded = true;
 			}
 		}
-		if (newTilesLoaded) this.fire(new Event("data", {
-			dataType: "source",
+		if (newTilesLoaded) this.fire(new MapSourceDataEvent("data", {
 			sourceDataType: "idle",
 			sourceId: this.id
 		}));
@@ -3907,8 +4140,7 @@ var CanvasSource = class extends ImageSource {
 				newTilesLoaded = true;
 			}
 		}
-		if (newTilesLoaded) this.fire(new Event("data", {
-			dataType: "source",
+		if (newTilesLoaded) this.fire(new MapSourceDataEvent("data", {
 			sourceDataType: "idle",
 			sourceId: this.id
 		}));
@@ -5050,10 +5282,9 @@ var TileManager = class TileManager extends Evented {
 	}
 	_abortTile(tile) {
 		if (this._source.abortTile) this._source.abortTile(tile);
-		this._source.fire(new Event("dataabort", {
+		this._source.fire(new MapSourceDataEvent("dataabort", {
 			tile,
-			coord: tile.tileID,
-			dataType: "source"
+			coord: tile.tileID
 		}));
 	}
 	serialize() {
@@ -5117,8 +5348,7 @@ var TileManager = class TileManager extends Evented {
 		if (this.getSource().type === "raster-dem" && tile.dem) backfillDEM(tile, this._inViewTiles);
 		tile.featureStateRevision = -1;
 		this._state.initializeTileState(tile, this.map ? this.map.painter : null);
-		if (!tile.aborted) this._source.fire(new Event("data", {
-			dataType: "source",
+		if (!tile.aborted) this._source.fire(new MapSourceDataEvent("data", {
 			tile,
 			coord: tile.tileID
 		}));
@@ -5261,9 +5491,8 @@ var TileManager = class TileManager extends Evented {
 		if (this.usedForTerrain) idealTileIDs = this._addTerrainIdealTiles(idealTileIDs);
 		const noPendingDataEmissions = idealTileIDs.length === 0 && !this._updated && this._didEmitContent;
 		this._updated = true;
-		if (noPendingDataEmissions) this.fire(new Event("data", {
+		if (noPendingDataEmissions) this.fire(new MapSourceDataEvent("data", {
 			sourceDataType: "idle",
-			dataType: "source",
 			sourceId: this.id
 		}));
 		const zoom = coveringZoomLevel(transform, this._source);
@@ -5367,10 +5596,9 @@ var TileManager = class TileManager extends Evented {
 		}
 		tile.uses++;
 		this._inViewTiles.setTile(tileID.key, tile);
-		if (!cached) this._source.fire(new Event("dataloading", {
+		if (!cached) this._source.fire(new MapSourceDataEvent("dataloading", {
 			tile,
-			coord: tile.tileID,
-			dataType: "source"
+			coord: tile.tileID
 		}));
 		return tile;
 	}
@@ -7758,6 +7986,7 @@ const shaders = {
 	linePattern: prepare("#ifdef GL_ES\nprecision highp float;\n#endif\nuniform lowp float u_device_pixel_ratio;uniform vec2 u_texsize;uniform float u_fade;uniform mediump vec3 u_scale;uniform sampler2D u_image;in vec2 v_normal;flat in vec2 v_width2;in float v_linesofar;in float v_gamma_scale;flat in float v_width;\n#ifdef GLOBE\nin float v_depth;\n#endif\n#pragma maplibre: define lowp vec4 pattern_from\n#pragma maplibre: define lowp vec4 pattern_to\n#pragma maplibre: define lowp float pixel_ratio_from\n#pragma maplibre: define lowp float pixel_ratio_to\n#pragma maplibre: define lowp float blur\n#pragma maplibre: define lowp float opacity\nvoid main() {\n#pragma maplibre: initialize mediump vec4 pattern_from\n#pragma maplibre: initialize mediump vec4 pattern_to\n#pragma maplibre: initialize lowp float pixel_ratio_from\n#pragma maplibre: initialize lowp float pixel_ratio_to\n#pragma maplibre: initialize lowp float blur\n#pragma maplibre: initialize lowp float opacity\nvec2 pattern_tl_a=pattern_from.xy;vec2 pattern_br_a=pattern_from.zw;vec2 pattern_tl_b=pattern_to.xy;vec2 pattern_br_b=pattern_to.zw;float tileZoomRatio=u_scale.x;float fromScale=u_scale.y;float toScale=u_scale.z;vec2 display_size_a=(pattern_br_a-pattern_tl_a)/pixel_ratio_from;vec2 display_size_b=(pattern_br_b-pattern_tl_b)/pixel_ratio_to;vec2 pattern_size_a=vec2(display_size_a.x*fromScale/tileZoomRatio,display_size_a.y);vec2 pattern_size_b=vec2(display_size_b.x*toScale/tileZoomRatio,display_size_b.y);float aspect_a=display_size_a.y/v_width;float aspect_b=display_size_b.y/v_width;float dist=length(v_normal)*v_width2.s;float blur2=(blur+1.0/u_device_pixel_ratio)*v_gamma_scale;float alpha=clamp(min(dist-(v_width2.t-blur2),v_width2.s-dist)/blur2,0.0,1.0);float x_a=mod(v_linesofar/pattern_size_a.x*aspect_a,1.0);float x_b=mod(v_linesofar/pattern_size_b.x*aspect_b,1.0);float y=0.5*v_normal.y+0.5;vec2 texel_size=1.0/u_texsize;vec2 pos_a=mix(pattern_tl_a*texel_size-texel_size,pattern_br_a*texel_size+texel_size,vec2(x_a,y));vec2 pos_b=mix(pattern_tl_b*texel_size-texel_size,pattern_br_b*texel_size+texel_size,vec2(x_b,y));vec4 color=mix(texture(u_image,pos_a),texture(u_image,pos_b),u_fade);fragColor=color*alpha*opacity;\n#ifdef GLOBE\nif (v_depth > 1.0) {discard;}\n#endif\n#ifdef OVERDRAW_INSPECTOR\nfragColor=vec4(1.0);\n#endif\n}", "\n#define scale 0.015873016\n#define LINE_DISTANCE_SCALE 2.0\nlayout(location=0) in vec2 a_pos_normal;layout(location=1) in vec4 a_data;uniform vec2 u_translation;uniform vec2 u_units_to_pixels;uniform mediump float u_ratio;uniform lowp float u_device_pixel_ratio;out vec2 v_normal;flat out vec2 v_width2;out float v_linesofar;out float v_gamma_scale;flat out float v_width;\n#ifdef GLOBE\nout float v_depth;\n#endif\n#pragma maplibre: define lowp float blur\n#pragma maplibre: define lowp float opacity\n#pragma maplibre: define lowp float offset\n#pragma maplibre: define mediump float gapwidth\n#pragma maplibre: define mediump float width\n#pragma maplibre: define lowp float floorwidth\n#pragma maplibre: define lowp vec4 pattern_from\n#pragma maplibre: define lowp vec4 pattern_to\n#pragma maplibre: define lowp float pixel_ratio_from\n#pragma maplibre: define lowp float pixel_ratio_to\nvoid main() {\n#pragma maplibre: initialize lowp float blur\n#pragma maplibre: initialize lowp float opacity\n#pragma maplibre: initialize lowp float offset\n#pragma maplibre: initialize mediump float gapwidth\n#pragma maplibre: initialize mediump float width\n#pragma maplibre: initialize lowp float floorwidth\n#pragma maplibre: initialize mediump vec4 pattern_from\n#pragma maplibre: initialize mediump vec4 pattern_to\n#pragma maplibre: initialize lowp float pixel_ratio_from\n#pragma maplibre: initialize lowp float pixel_ratio_to\nif (opacity < 0.01) {gl_Position=vec4(-2.0,-2.0,-2.0,1.0);return;}float ANTIALIASING=1.0/u_device_pixel_ratio/2.0;vec2 a_extrude=a_data.xy-128.0;float a_direction=mod(a_data.z,4.0)-1.0;float a_linesofar=(floor(a_data.z/4.0)+a_data.w*64.0)*LINE_DISTANCE_SCALE;vec2 pos=floor(a_pos_normal*0.5);mediump vec2 normal=a_pos_normal-2.0*pos;normal.y=normal.y*2.0-1.0;v_normal=normal;gapwidth=gapwidth/2.0;float halfwidth=width/2.0;offset=-1.0*offset;float inset=gapwidth+(gapwidth > 0.0 ? ANTIALIASING : 0.0);float outset=gapwidth+halfwidth*(gapwidth > 0.0 ? 2.0 : 1.0)+(halfwidth==0.0 ? 0.0 : ANTIALIASING);mediump vec2 dist=outset*a_extrude*scale;mediump float u=0.5*a_direction;mediump float t=1.0-abs(u);mediump vec2 offset2=offset*a_extrude*scale*normal.y*mat2(t,-u,u,t);float adjustedThickness=projectLineThickness(pos.y);vec4 projected_no_extrude=projectTile(pos+offset2/u_ratio*adjustedThickness+u_translation);vec4 projected_with_extrude=projectTile(pos+offset2/u_ratio*adjustedThickness+u_translation+dist/u_ratio*adjustedThickness);gl_Position=projected_with_extrude;\n#ifdef GLOBE\nv_depth=gl_Position.z/gl_Position.w;\n#endif\n#ifdef TERRAIN3D\nv_gamma_scale=1.0;\n#else\nfloat extrude_length_without_perspective=length(dist);float extrude_length_with_perspective=length((projected_with_extrude.xy-projected_no_extrude.xy)/projected_with_extrude.w*u_units_to_pixels);v_gamma_scale=extrude_length_without_perspective/extrude_length_with_perspective;\n#endif\nv_linesofar=a_linesofar;v_width2=vec2(outset,inset);v_width=floorwidth;}"),
 	lineSDF: prepare("uniform lowp float u_device_pixel_ratio;uniform lowp float u_lineatlas_width;uniform sampler2D u_image;uniform float u_mix;in vec2 v_normal;flat in vec2 v_width2;in vec2 v_tex_a;in vec2 v_tex_b;in float v_gamma_scale;\n#ifdef GLOBE\nin float v_depth;\n#endif\n#pragma maplibre: define highp vec4 color\n#pragma maplibre: define lowp float blur\n#pragma maplibre: define lowp float opacity\n#pragma maplibre: define mediump float width\n#pragma maplibre: define lowp float floorwidth\n#pragma maplibre: define mediump vec4 dasharray_from\n#pragma maplibre: define mediump vec4 dasharray_to\nvoid main() {\n#pragma maplibre: initialize highp vec4 color\n#pragma maplibre: initialize lowp float blur\n#pragma maplibre: initialize lowp float opacity\n#pragma maplibre: initialize mediump float width\n#pragma maplibre: initialize lowp float floorwidth\n#pragma maplibre: initialize mediump vec4 dasharray_from\n#pragma maplibre: initialize mediump vec4 dasharray_to\nfloat dist=length(v_normal)*v_width2.s;float blur2=(blur+1.0/u_device_pixel_ratio)*v_gamma_scale;float alpha=clamp(min(dist-(v_width2.t-blur2),v_width2.s-dist)/blur2,0.0,1.0);float sdfdist_a=texture(u_image,v_tex_a).a;float sdfdist_b=texture(u_image,v_tex_b).a;float sdfdist=mix(sdfdist_a,sdfdist_b,u_mix);float sdfgamma=(u_lineatlas_width/256.0/u_device_pixel_ratio)/min(dasharray_from.w,dasharray_to.w);alpha*=smoothstep(0.5-sdfgamma/floorwidth,0.5+sdfgamma/floorwidth,sdfdist);fragColor=color*(alpha*opacity);\n#ifdef GLOBE\nif (v_depth > 1.0) {discard;}\n#endif\n#ifdef OVERDRAW_INSPECTOR\nfragColor=vec4(1.0);\n#endif\n}", "\n#define scale 0.015873016\n#define LINE_DISTANCE_SCALE 2.0\nlayout(location=0) in vec2 a_pos_normal;layout(location=1) in vec4 a_data;uniform vec2 u_translation;uniform mediump float u_ratio;uniform lowp float u_device_pixel_ratio;uniform vec2 u_units_to_pixels;uniform float u_tileratio;uniform float u_crossfade_from;uniform float u_crossfade_to;uniform float u_lineatlas_height;out vec2 v_normal;flat out vec2 v_width2;out vec2 v_tex_a;out vec2 v_tex_b;out float v_gamma_scale;\n#ifdef GLOBE\nout float v_depth;\n#endif\n#pragma maplibre: define highp vec4 color\n#pragma maplibre: define lowp float blur\n#pragma maplibre: define lowp float opacity\n#pragma maplibre: define mediump float gapwidth\n#pragma maplibre: define lowp float offset\n#pragma maplibre: define mediump float width\n#pragma maplibre: define lowp float floorwidth\n#pragma maplibre: define mediump vec4 dasharray_from\n#pragma maplibre: define mediump vec4 dasharray_to\nvoid main() {\n#pragma maplibre: initialize highp vec4 color\n#pragma maplibre: initialize lowp float blur\n#pragma maplibre: initialize lowp float opacity\n#pragma maplibre: initialize mediump float gapwidth\n#pragma maplibre: initialize lowp float offset\n#pragma maplibre: initialize mediump float width\n#pragma maplibre: initialize lowp float floorwidth\n#pragma maplibre: initialize mediump vec4 dasharray_from\n#pragma maplibre: initialize mediump vec4 dasharray_to\nif (opacity < 0.01) {gl_Position=vec4(-2.0,-2.0,-2.0,1.0);return;}float ANTIALIASING=1.0/u_device_pixel_ratio/2.0;vec2 a_extrude=a_data.xy-128.0;float a_direction=mod(a_data.z,4.0)-1.0;float a_linesofar=(floor(a_data.z/4.0)+a_data.w*64.0)*LINE_DISTANCE_SCALE;vec2 pos=floor(a_pos_normal*0.5);mediump vec2 normal=a_pos_normal-2.0*pos;normal.y=normal.y*2.0-1.0;v_normal=normal;gapwidth=gapwidth/2.0;float halfwidth=width/2.0;offset=-1.0*offset;float inset=gapwidth+(gapwidth > 0.0 ? ANTIALIASING : 0.0);float outset=gapwidth+halfwidth*(gapwidth > 0.0 ? 2.0 : 1.0)+(halfwidth==0.0 ? 0.0 : ANTIALIASING);mediump vec2 dist=outset*a_extrude*scale;mediump float u=0.5*a_direction;mediump float t=1.0-abs(u);mediump vec2 offset2=offset*a_extrude*scale*normal.y*mat2(t,-u,u,t);float adjustedThickness=projectLineThickness(pos.y);vec4 projected_no_extrude=projectTile(pos+offset2/u_ratio*adjustedThickness+u_translation);vec4 projected_with_extrude=projectTile(pos+offset2/u_ratio*adjustedThickness+u_translation+dist/u_ratio*adjustedThickness);gl_Position=projected_with_extrude;\n#ifdef GLOBE\nv_depth=gl_Position.z/gl_Position.w;\n#endif\n#ifdef TERRAIN3D\nv_gamma_scale=1.0;\n#else\nfloat extrude_length_without_perspective=length(dist);float extrude_length_with_perspective=length((projected_with_extrude.xy-projected_no_extrude.xy)/projected_with_extrude.w*u_units_to_pixels);v_gamma_scale=extrude_length_without_perspective/extrude_length_with_perspective;\n#endif\nfloat u_patternscale_a_x=u_tileratio/dasharray_from.w/u_crossfade_from;float u_patternscale_a_y=-dasharray_from.z/2.0/u_lineatlas_height;float u_patternscale_b_x=u_tileratio/dasharray_to.w/u_crossfade_to;float u_patternscale_b_y=-dasharray_to.z/2.0/u_lineatlas_height;v_tex_a=vec2(a_linesofar*u_patternscale_a_x/floorwidth,normal.y*u_patternscale_a_y+(float(dasharray_from.y)+0.5)/u_lineatlas_height);v_tex_b=vec2(a_linesofar*u_patternscale_b_x/floorwidth,normal.y*u_patternscale_b_y+(float(dasharray_to.y)+0.5)/u_lineatlas_height);v_width2=vec2(outset,inset);}"),
 	lineGradientSDF: prepare("uniform lowp float u_device_pixel_ratio;uniform sampler2D u_image;uniform sampler2D u_image_dash;uniform float u_mix;uniform lowp float u_lineatlas_width;in vec2 v_normal;flat in vec2 v_width2;in vec2 v_tex_a;in vec2 v_tex_b;in float v_gamma_scale;in highp vec2 v_uv;\n#ifdef GLOBE\nin float v_depth;\n#endif\n#pragma maplibre: define lowp float blur\n#pragma maplibre: define lowp float opacity\n#pragma maplibre: define mediump float width\n#pragma maplibre: define lowp float floorwidth\n#pragma maplibre: define mediump vec4 dasharray_from\n#pragma maplibre: define mediump vec4 dasharray_to\nvoid main() {\n#pragma maplibre: initialize lowp float blur\n#pragma maplibre: initialize lowp float opacity\n#pragma maplibre: initialize mediump float width\n#pragma maplibre: initialize lowp float floorwidth\n#pragma maplibre: initialize mediump vec4 dasharray_from\n#pragma maplibre: initialize mediump vec4 dasharray_to\nfloat dist=length(v_normal)*v_width2.s;float blur2=(blur+1.0/u_device_pixel_ratio)*v_gamma_scale;float alpha=clamp(min(dist-(v_width2.t-blur2),v_width2.s-dist)/blur2,0.0,1.0);vec4 color=texture(u_image,v_uv);float sdfdist_a=texture(u_image_dash,v_tex_a).a;float sdfdist_b=texture(u_image_dash,v_tex_b).a;float sdfdist=mix(sdfdist_a,sdfdist_b,u_mix);float sdfgamma=(u_lineatlas_width/256.0)/min(dasharray_from.w,dasharray_to.w);float dash_alpha=smoothstep(0.5-sdfgamma/floorwidth,0.5+sdfgamma/floorwidth,sdfdist);fragColor=color*(alpha*dash_alpha*opacity);\n#ifdef GLOBE\nif (v_depth > 1.0) {discard;}\n#endif\n#ifdef OVERDRAW_INSPECTOR\nfragColor=vec4(1.0);\n#endif\n}", "\n#define scale 0.015873016\n#define LINE_DISTANCE_SCALE 2.0\nlayout(location=0) in vec2 a_pos_normal;layout(location=1) in vec4 a_data;layout(location=2) in float a_uv_x;layout(location=3) in float a_split_index;uniform vec2 u_translation;uniform mediump float u_ratio;uniform lowp float u_device_pixel_ratio;uniform vec2 u_units_to_pixels;uniform float u_image_height;uniform float u_tileratio;uniform float u_crossfade_from;uniform float u_crossfade_to;uniform float u_lineatlas_height;out vec2 v_normal;flat out vec2 v_width2;out float v_gamma_scale;out highp vec2 v_uv;out vec2 v_tex_a;out vec2 v_tex_b;\n#ifdef GLOBE\nout float v_depth;\n#endif\n#pragma maplibre: define lowp float blur\n#pragma maplibre: define lowp float opacity\n#pragma maplibre: define mediump float gapwidth\n#pragma maplibre: define lowp float offset\n#pragma maplibre: define mediump float width\n#pragma maplibre: define lowp float floorwidth\n#pragma maplibre: define mediump vec4 dasharray_from\n#pragma maplibre: define mediump vec4 dasharray_to\nvoid main() {\n#pragma maplibre: initialize lowp float blur\n#pragma maplibre: initialize lowp float opacity\n#pragma maplibre: initialize mediump float gapwidth\n#pragma maplibre: initialize lowp float offset\n#pragma maplibre: initialize mediump float width\n#pragma maplibre: initialize lowp float floorwidth\n#pragma maplibre: initialize mediump vec4 dasharray_from\n#pragma maplibre: initialize mediump vec4 dasharray_to\nif (opacity < 0.01) {gl_Position=vec4(-2.0,-2.0,-2.0,1.0);return;}float ANTIALIASING=1.0/u_device_pixel_ratio/2.0;vec2 a_extrude=a_data.xy-128.0;float a_direction=mod(a_data.z,4.0)-1.0;float a_linesofar=(floor(a_data.z/4.0)+a_data.w*64.0)*LINE_DISTANCE_SCALE;float texel_height=1.0/u_image_height;float half_texel_height=0.5*texel_height;v_uv=vec2(a_uv_x,a_split_index*texel_height-half_texel_height);vec2 pos=floor(a_pos_normal*0.5);mediump vec2 normal=a_pos_normal-2.0*pos;normal.y=normal.y*2.0-1.0;v_normal=normal;gapwidth=gapwidth/2.0;float halfwidth=width/2.0;offset=-1.0*offset;float inset=gapwidth+(gapwidth > 0.0 ? ANTIALIASING : 0.0);float outset=gapwidth+halfwidth*(gapwidth > 0.0 ? 2.0 : 1.0)+(halfwidth==0.0 ? 0.0 : ANTIALIASING);mediump vec2 dist=outset*a_extrude*scale;mediump float u=0.5*a_direction;mediump float t=1.0-abs(u);mediump vec2 offset2=offset*a_extrude*scale*normal.y*mat2(t,-u,u,t);float adjustedThickness=projectLineThickness(pos.y);vec4 projected_no_extrude=projectTile(pos+offset2/u_ratio*adjustedThickness+u_translation);vec4 projected_with_extrude=projectTile(pos+offset2/u_ratio*adjustedThickness+u_translation+dist/u_ratio*adjustedThickness);gl_Position=projected_with_extrude;\n#ifdef GLOBE\nv_depth=gl_Position.z/gl_Position.w;\n#endif\n#ifdef TERRAIN3D\nv_gamma_scale=1.0;\n#else\nfloat extrude_length_without_perspective=length(dist);float extrude_length_with_perspective=length((projected_with_extrude.xy-projected_no_extrude.xy)/projected_with_extrude.w*u_units_to_pixels);v_gamma_scale=extrude_length_without_perspective/extrude_length_with_perspective;\n#endif\nfloat u_patternscale_a_x=u_tileratio/dasharray_from.w/u_crossfade_from;float u_patternscale_a_y=-dasharray_from.z/2.0/u_lineatlas_height;float u_patternscale_b_x=u_tileratio/dasharray_to.w/u_crossfade_to;float u_patternscale_b_y=-dasharray_to.z/2.0/u_lineatlas_height;v_tex_a=vec2(a_linesofar*u_patternscale_a_x/floorwidth,normal.y*u_patternscale_a_y+(float(dasharray_from.y)+0.5)/u_lineatlas_height);v_tex_b=vec2(a_linesofar*u_patternscale_b_x/floorwidth,normal.y*u_patternscale_b_y+(float(dasharray_to.y)+0.5)/u_lineatlas_height);v_width2=vec2(outset,inset);}"),
+	layerOpacity: prepare("uniform sampler2D u_image;uniform float u_opacity;in vec2 v_pos;void main() {fragColor=texture(u_image,v_pos)*u_opacity;\n#ifdef OVERDRAW_INSPECTOR\nfragColor=vec4(0.0);\n#endif\n}", "layout(location=0) in vec2 a_pos;out vec2 v_pos;void main() {gl_Position=vec4(a_pos.x*2.0-1.0,1.0-a_pos.y*2.0,0.0,1.0);v_pos.x=a_pos.x;v_pos.y=1.0-a_pos.y;}"),
 	raster: prepare("uniform float u_fade_t;uniform float u_opacity;uniform sampler2D u_image0;uniform sampler2D u_image1;in vec2 v_pos0;in vec2 v_pos1;uniform float u_brightness_low;uniform float u_brightness_high;uniform float u_saturation_factor;uniform float u_contrast_factor;uniform vec3 u_spin_weights;void main() {vec4 color0=texture(u_image0,v_pos0);vec4 color1=texture(u_image1,v_pos1);if (color0.a > 0.0) {color0.rgb=color0.rgb/color0.a;}if (color1.a > 0.0) {color1.rgb=color1.rgb/color1.a;}vec4 color=mix(color0,color1,u_fade_t);color.a*=u_opacity;vec3 rgb=color.rgb;rgb=vec3(dot(rgb,u_spin_weights.xyz),dot(rgb,u_spin_weights.zxy),dot(rgb,u_spin_weights.yzx));float average=(color.r+color.g+color.b)/3.0;rgb+=(average-rgb)*u_saturation_factor;rgb=(rgb-0.5)*u_contrast_factor+0.5;vec3 u_high_vec=vec3(u_brightness_low,u_brightness_low,u_brightness_low);vec3 u_low_vec=vec3(u_brightness_high,u_brightness_high,u_brightness_high);fragColor=vec4(mix(u_high_vec,u_low_vec,rgb)*color.a,color.a);\n#ifdef OVERDRAW_INSPECTOR\nfragColor=vec4(1.0);\n#endif\n}", "uniform vec2 u_tl_parent;uniform float u_scale_parent;uniform float u_buffer_scale;uniform vec4 u_coords_top;uniform vec4 u_coords_bottom;layout(location=0) in vec2 a_pos;out vec2 v_pos0;out vec2 v_pos1;void main() {vec2 fractionalPos=a_pos/8192.0;vec2 position=mix(mix(u_coords_top.xy,u_coords_top.zw,fractionalPos.x),mix(u_coords_bottom.xy,u_coords_bottom.zw,fractionalPos.x),fractionalPos.y);gl_Position=projectTile(position,position);v_pos0=((fractionalPos-0.5)/u_buffer_scale)+0.5;\n#ifdef GLOBE\nif (a_pos.y <-32767.5) {v_pos0.y=0.0;}if (a_pos.y > 32766.5) {v_pos0.y=1.0;}\n#endif\nv_pos1=(v_pos0*u_scale_parent)+u_tl_parent;}"),
 	symbolIcon: prepare("uniform sampler2D u_texture;in vec2 v_tex;flat in float v_total_opacity;void main() {fragColor=texture(u_texture,v_tex)*v_total_opacity;\n#ifdef OVERDRAW_INSPECTOR\nfragColor=vec4(1.0);\n#endif\n}", "layout(location=0) in vec4 a_pos_offset;layout(location=1) in vec4 a_data;layout(location=2) in vec4 a_pixeloffset;layout(location=3) in vec3 a_projected_pos;layout(location=4) in float a_fade_opacity;uniform bool u_is_size_zoom_constant;uniform bool u_is_size_feature_constant;uniform highp float u_size_t;uniform highp float u_size;uniform highp float u_camera_to_center_distance;uniform highp float u_pitch;uniform bool u_rotate_symbol;uniform highp float u_aspect_ratio;uniform float u_fade_change;uniform mat4 u_label_plane_matrix;uniform mat4 u_coord_matrix;uniform bool u_is_text;uniform bool u_pitch_with_map;uniform vec2 u_texsize;uniform bool u_is_along_line;uniform bool u_is_variable_anchor;uniform vec2 u_translation;uniform float u_pitched_scale;uniform bool u_is_offset;out vec2 v_tex;flat out float v_total_opacity;\n#pragma maplibre: define lowp float opacity\nvoid main() {\n#pragma maplibre: initialize lowp float opacity\nvec2 a_pos=a_pos_offset.xy;vec2 a_offset=a_pos_offset.zw;vec2 a_tex=a_data.xy;vec2 a_size=a_data.zw;float a_size_min=floor(a_size[0]*0.5);vec2 a_pxoffset=a_pixeloffset.xy;vec2 a_minFontScale=a_pixeloffset.zw/256.0;float ele=get_elevation(a_pos);highp float segment_angle=-a_projected_pos[2];float size;if (!u_is_size_zoom_constant && !u_is_size_feature_constant) {size=mix(a_size_min,a_size[1],u_size_t)/128.0;} else if (u_is_size_zoom_constant && !u_is_size_feature_constant) {size=a_size_min/128.0;} else {size=u_size;}vec2 translated_a_pos=a_pos+u_translation;vec4 projectedPoint=projectTileWithElevation(translated_a_pos,ele);vec2 fade_opacity=unpack_opacity(a_fade_opacity);float fade_change=fade_opacity[1] > 0.5 ? u_fade_change :-u_fade_change;float visibility=calculate_visibility(projectedPoint);v_total_opacity=opacity*max(0.0,min(visibility,fade_opacity[0]+fade_change));if (v_total_opacity < 0.1){gl_Position=vec4(-2.,-2.,-2.,1.);return;}highp float camera_to_anchor_distance=projectedPoint.w;highp float distance_ratio=u_pitch_with_map ?\ncamera_to_anchor_distance/u_camera_to_center_distance :\nu_camera_to_center_distance/camera_to_anchor_distance;highp float perspective_ratio=clamp(0.5+0.5*distance_ratio,0.0,4.0);if (!u_is_offset) {size*=perspective_ratio;}float fontScale=u_is_text ? size/24.0 : size;highp float symbol_rotation=0.0;if (u_rotate_symbol) {vec4 offsetProjectedPoint=projectTileWithElevation(translated_a_pos+vec2(1,0),ele);vec2 a=projectedPoint.xy/projectedPoint.w;vec2 b=offsetProjectedPoint.xy/offsetProjectedPoint.w;symbol_rotation=atan((b.y-a.y)/u_aspect_ratio,b.x-a.x);}highp float angle_sin=sin(segment_angle+symbol_rotation);highp float angle_cos=cos(segment_angle+symbol_rotation);mat2 rotation_matrix=mat2(angle_cos,-1.0*angle_sin,angle_sin,angle_cos);vec4 projected_pos;if (u_is_along_line || u_is_variable_anchor) {projected_pos=vec4(a_projected_pos.xy,ele,1.0);} else if (u_pitch_with_map) {projected_pos=u_label_plane_matrix*vec4(a_projected_pos.xy+u_translation,ele,1.0);} else {projected_pos=u_label_plane_matrix*projectTileWithElevation(a_projected_pos.xy+u_translation,ele);}float z=float(u_pitch_with_map)*projected_pos.z/projected_pos.w;float projectionScaling=1.0;\n#ifdef GLOBE\nif(u_pitch_with_map) {float anchor_pos_tile_y=(u_coord_matrix*vec4(projected_pos.xy/projected_pos.w,z,1.0)).y;projectionScaling=mix(projectionScaling,1.0/circumferenceRatioAtTileY(anchor_pos_tile_y)*u_pitched_scale,u_projection_transition);}\n#endif\nvec4 finalPos=u_coord_matrix*vec4(projected_pos.xy/projected_pos.w+rotation_matrix*(a_offset/32.0*max(a_minFontScale,fontScale)+a_pxoffset/16.0)*projectionScaling,z,1.0);if(u_pitch_with_map) {finalPos=projectTileWithElevation(finalPos.xy,finalPos.z);}gl_Position=finalPos;v_tex=a_tex/u_texsize;}"),
 	symbolSDF: prepare("#define SDF_PX 8.0\nuniform bool u_is_halo;uniform bool u_is_plain;uniform sampler2D u_texture;uniform highp float u_gamma_scale;uniform lowp float u_device_pixel_ratio;uniform bool u_is_text;in vec2 v_data0;in vec3 v_data1;\n#pragma maplibre: define highp vec4 fill_color\n#pragma maplibre: define highp vec4 halo_color\n#pragma maplibre: define lowp float halo_width\n#pragma maplibre: define lowp float halo_blur\nvoid main() {\n#pragma maplibre: initialize highp vec4 fill_color\n#pragma maplibre: initialize highp vec4 halo_color\n#pragma maplibre: initialize lowp float halo_width\n#pragma maplibre: initialize lowp float halo_blur\nfloat EDGE_GAMMA=0.105/u_device_pixel_ratio;vec2 tex=v_data0.xy;float gamma_scale=v_data1.x;float size=v_data1.y;float total_opacity=v_data1[2];float fontScale=u_is_text ? size/24.0 : size;highp float gamma=EDGE_GAMMA/(fontScale*u_gamma_scale);lowp float inner_edge=(256.0-64.0)/256.0;lowp float dist=texture(u_texture,tex).a;lowp vec4 color_alpha_out_text,color_alpha_out_halo;if (u_is_plain){highp float gamma_scaled=gamma*gamma_scale;highp float alpha=smoothstep(inner_edge-gamma_scaled,inner_edge+gamma_scaled,dist);color_alpha_out_text=total_opacity*alpha*fill_color;}if (u_is_halo) {float gamma_halo=(halo_blur*1.19/SDF_PX+EDGE_GAMMA)/(fontScale*u_gamma_scale);float inner_edge_halo=inner_edge+gamma_halo*gamma_scale;highp float gamma_scaled_halo=gamma_halo*gamma_scale;highp float alpha_halo=smoothstep(inner_edge_halo-gamma_scaled_halo,inner_edge_halo+gamma_scaled_halo,dist);highp float halo_edge=(6.0-halo_width/fontScale)/SDF_PX;alpha_halo= min(smoothstep(halo_edge-gamma_scaled_halo,halo_edge+gamma_scaled_halo,dist),1.0-alpha_halo);color_alpha_out_halo=total_opacity*alpha_halo*halo_color;}if (u_is_plain && u_is_halo) {fragColor=color_alpha_out_text+(1.-color_alpha_out_text.a)*color_alpha_out_halo;} else if (u_is_halo){fragColor=color_alpha_out_halo;} else {fragColor=color_alpha_out_text;}\n#ifdef OVERDRAW_INSPECTOR\nfragColor=vec4(1.0);\n#endif\n}", "layout(location=0) in vec4 a_pos_offset;layout(location=1) in vec4 a_data;layout(location=2) in vec4 a_pixeloffset;layout(location=3) in vec3 a_projected_pos;layout(location=4) in float a_fade_opacity;uniform bool u_is_size_zoom_constant;uniform bool u_is_size_feature_constant;uniform highp float u_size_t;uniform highp float u_size;uniform mat4 u_label_plane_matrix;uniform mat4 u_coord_matrix;uniform bool u_is_text;uniform bool u_pitch_with_map;uniform bool u_is_along_line;uniform bool u_is_variable_anchor;uniform highp float u_pitch;uniform bool u_rotate_symbol;uniform highp float u_aspect_ratio;uniform highp float u_camera_to_center_distance;uniform float u_fade_change;uniform vec2 u_texsize;uniform vec2 u_translation;uniform float u_pitched_scale;uniform bool u_is_offset;out vec2 v_data0;out vec3 v_data1;\n#pragma maplibre: define highp vec4 fill_color\n#pragma maplibre: define highp vec4 halo_color\n#pragma maplibre: define lowp float opacity\n#pragma maplibre: define lowp float halo_width\n#pragma maplibre: define lowp float halo_blur\nvoid main() {\n#pragma maplibre: initialize highp vec4 fill_color\n#pragma maplibre: initialize highp vec4 halo_color\n#pragma maplibre: initialize lowp float opacity\n#pragma maplibre: initialize lowp float halo_width\n#pragma maplibre: initialize lowp float halo_blur\nvec2 a_pos=a_pos_offset.xy;vec2 a_offset=a_pos_offset.zw;vec2 a_tex=a_data.xy;vec2 a_size=a_data.zw;float a_size_min=floor(a_size[0]*0.5);vec2 a_pxoffset=a_pixeloffset.xy/16.0;vec2 a_minFontScale=a_pixeloffset.zw/256.0;float ele=get_elevation(a_pos);highp float segment_angle=-a_projected_pos[2];float size;if (!u_is_size_zoom_constant && !u_is_size_feature_constant) {size=mix(a_size_min,a_size[1],u_size_t)/128.0;} else if (u_is_size_zoom_constant && !u_is_size_feature_constant) {size=a_size_min/128.0;} else {size=u_size;}vec2 translated_a_pos=a_pos+u_translation;vec4 projectedPoint=projectTileWithElevation(translated_a_pos,ele);vec2 fade_opacity=unpack_opacity(a_fade_opacity);float visibility=calculate_visibility(projectedPoint);float fade_change=fade_opacity[1] > 0.5 ? u_fade_change :-u_fade_change;float interpolated_fade_opacity=max(0.0,min(visibility,fade_opacity[0]+fade_change));float total_opacity=opacity*interpolated_fade_opacity;if (total_opacity < 0.1){gl_Position=vec4(-2.,-2.,-2.,1.);return;}highp float camera_to_anchor_distance=projectedPoint.w;highp float distance_ratio=u_pitch_with_map ?\ncamera_to_anchor_distance/u_camera_to_center_distance :\nu_camera_to_center_distance/camera_to_anchor_distance;highp float perspective_ratio=clamp(0.5+0.5*distance_ratio,0.0,4.0);if (!u_is_offset) {size*=perspective_ratio;}float fontScale=u_is_text ? size/24.0 : size;highp float symbol_rotation=0.0;if (u_rotate_symbol) {vec4 offsetProjectedPoint=projectTileWithElevation(translated_a_pos+vec2(1,0),ele);vec2 a=projectedPoint.xy/projectedPoint.w;vec2 b=offsetProjectedPoint.xy/offsetProjectedPoint.w;symbol_rotation=atan((b.y-a.y)/u_aspect_ratio,b.x-a.x);}highp float angle_sin=sin(segment_angle+symbol_rotation);highp float angle_cos=cos(segment_angle+symbol_rotation);mat2 rotation_matrix=mat2(angle_cos,-1.0*angle_sin,angle_sin,angle_cos);vec4 projected_pos;if (u_is_along_line || u_is_variable_anchor) {projected_pos=vec4(a_projected_pos.xy,ele,1.0);} else if (u_pitch_with_map) {projected_pos=u_label_plane_matrix*vec4(a_projected_pos.xy+u_translation,ele,1.0);} else {projected_pos=u_label_plane_matrix*projectTileWithElevation(a_projected_pos.xy+u_translation,ele);}float z=float(u_pitch_with_map)*projected_pos.z/projected_pos.w;float projectionScaling=1.0;\n#ifdef GLOBE\nif(u_pitch_with_map) {float anchor_pos_tile_y=(u_coord_matrix*vec4(projected_pos.xy/projected_pos.w,z,1.0)).y;projectionScaling=mix(projectionScaling,1.0/circumferenceRatioAtTileY(anchor_pos_tile_y)*u_pitched_scale,u_projection_transition);}\n#endif\nvec4 finalPos=u_coord_matrix*vec4(projected_pos.xy/projected_pos.w+rotation_matrix*(a_offset/32.0*max(a_minFontScale,fontScale)+a_pxoffset)*projectionScaling,z,1.0);if(u_pitch_with_map) {finalPos=projectTileWithElevation(finalPos.xy,finalPos.z);}float gamma_scale=finalPos.w;gl_Position=finalPos;v_data0=a_tex/u_texsize;v_data1=vec3(gamma_scale,size,total_opacity);}"),
@@ -9748,15 +9977,11 @@ var MercatorCameraHelper = class {
 		const delta = projectToWorldCoordinates(startWorldSize, targetCenter).sub(from);
 		const pixelPathLength = delta.mag();
 		const scaleOfZoom = zoomScale(targetZoom - startZoom);
-		const optionsMinZoom = typeof options.minZoom !== "undefined";
-		const hasMapMinZoomConstraint = tr.minZoom > -2;
-		let scaleOfMinZoom;
-		if (optionsMinZoom || hasMapMinZoomConstraint) {
-			const effectiveMinZoom = optionsMinZoom ? +options.minZoom : tr.minZoom;
-			const minZoomPreConstrain = Math.min(effectiveMinZoom, startZoom, targetZoom);
-			const minZoom = tr.applyConstrain(targetCenter, minZoomPreConstrain).zoom;
-			scaleOfMinZoom = zoomScale(minZoom - startZoom);
-		}
+		const requestedMinZoom = typeof options.minZoom !== "undefined" ? +options.minZoom : tr.minZoom;
+		const effectiveMinZoom = Math.max(requestedMinZoom, tr.minZoom);
+		const minZoomPreConstrain = Math.min(effectiveMinZoom, startZoom, targetZoom);
+		const minZoom = tr.applyConstrain(targetCenter, minZoomPreConstrain).zoom;
+		const scaleOfMinZoom = zoomScale(minZoom - startZoom);
 		const easeFunc = (k, scale, centerFactor, pointAtOffset) => {
 			tr.setZoom(k === 1 ? targetZoom : startZoom + scaleZoom(scale));
 			const newCenter = k === 1 ? targetCenter : unprojectFromWorldCoordinates(startWorldSize, from.add(delta.mult(centerFactor)));
@@ -12261,14 +12486,10 @@ var VerticalPerspectiveCameraHelper = class VerticalPerspectiveCameraHelper {
 		const normalizedStartZoom = startZoom + getZoomAdjustment(startCenter.lat, 0);
 		const normalizedTargetZoom = targetZoom + getZoomAdjustment(targetCenter.lat, 0);
 		const scaleOfZoom = zoomScale(normalizedTargetZoom - normalizedStartZoom);
-		const optionsMinZoom = typeof options.minZoom === "number";
-		const hasMapMinZoomConstraint = tr.minZoom > -2;
-		let scaleOfMinZoom;
-		if (optionsMinZoom || hasMapMinZoomConstraint) {
-			const normalizedEffectiveMinZoom = (optionsMinZoom ? +options.minZoom : tr.minZoom) + getZoomAdjustment(targetCenter.lat, 0);
-			const minZoomPreConstrain = Math.min(normalizedEffectiveMinZoom, normalizedStartZoom, normalizedTargetZoom) + getZoomAdjustment(0, targetCenter.lat);
-			scaleOfMinZoom = zoomScale(tr.applyConstrain(targetCenter, minZoomPreConstrain).zoom + getZoomAdjustment(targetCenter.lat, 0) - normalizedStartZoom);
-		}
+		const requestedMinZoom = typeof options.minZoom === "number" ? +options.minZoom : tr.minZoom;
+		const normalizedEffectiveMinZoom = Math.max(requestedMinZoom, tr.minZoom) + getZoomAdjustment(targetCenter.lat, 0);
+		const minZoomPreConstrain = Math.min(normalizedEffectiveMinZoom, normalizedStartZoom, normalizedTargetZoom) + getZoomAdjustment(0, targetCenter.lat);
+		const scaleOfMinZoom = zoomScale(tr.applyConstrain(targetCenter, minZoomPreConstrain).zoom + getZoomAdjustment(targetCenter.lat, 0) - normalizedStartZoom);
 		const deltaLng = differenceOfAnglesDegrees(startCenter.lng, targetCenter.lng);
 		const deltaLat = differenceOfAnglesDegrees(startCenter.lat, targetCenter.lat);
 		const easeFunc = (k, scale, centerFactor, _pointAtOffset) => {
@@ -12558,7 +12779,7 @@ var Style = class extends Evented {
 		}
 	}
 	async loadURL(url, options = {}, previousStyle) {
-		this.fire(new Event("dataloading", { dataType: "style" }));
+		this.fire(new MapStyleDataEvent("dataloading"));
 		options.validate = typeof options.validate === "boolean" ? options.validate : true;
 		this._loadStyleRequest = new AbortController();
 		const abortController = this._loadStyleRequest;
@@ -12574,7 +12795,7 @@ var Style = class extends Evented {
 		}
 	}
 	loadJSON(json, options = {}, previousStyle) {
-		this.fire(new Event("dataloading", { dataType: "style" }));
+		this.fire(new MapStyleDataEvent("dataloading"));
 		this._frameRequest = new AbortController();
 		browser.frameAsync(this._frameRequest, this.map._ownerWindow).then(() => {
 			this._frameRequest = null;
@@ -12583,7 +12804,7 @@ var Style = class extends Evented {
 		}).catch(() => {});
 	}
 	loadEmpty() {
-		this.fire(new Event("dataloading", { dataType: "style" }));
+		this.fire(new MapStyleDataEvent("dataloading"));
 		this._load(empty, { validate: false });
 	}
 	_load(json, options, previousStyle) {
@@ -12601,8 +12822,8 @@ var Style = class extends Evented {
 		this._setProjectionInternal(this.stylesheet.projection?.type || "mercator");
 		this.sky = new Sky(this.stylesheet.sky);
 		this.map.setTerrain(this.stylesheet.terrain ?? null);
-		this.fire(new Event("data", { dataType: "style" }));
-		this.fire(new Event("style.load"));
+		this.fire(new MapStyleDataEvent("data"));
+		this.fire(new MapStyleLoadEvent());
 	}
 	_createLayers() {
 		const dereferencedLayers = derefLayers(this.stylesheet.layers);
@@ -12652,7 +12873,7 @@ var Style = class extends Evented {
 			this._availableImages = this.imageManager.listImages();
 			if (isUpdate) this._changed = true;
 			this.dispatcher.broadcast("SI", this._availableImages);
-			this.fire(new Event("data", { dataType: "style" }));
+			this.fire(new MapStyleDataEvent("data"));
 			if (completion) completion(err);
 		});
 	}
@@ -12665,7 +12886,7 @@ var Style = class extends Evented {
 		this._availableImages = this.imageManager.listImages();
 		this._changed = true;
 		this.dispatcher.broadcast("SI", this._availableImages);
-		this.fire(new Event("data", { dataType: "style" }));
+		this.fire(new MapStyleDataEvent("data"));
 	}
 	_validateLayer(layer) {
 		const tileManager = this.tileManagers[layer.source];
@@ -12762,9 +12983,8 @@ var Style = class extends Evented {
 		}
 		for (const id in managersUsedBefore) {
 			const tileManager = this.tileManagers[id];
-			if (!!managersUsedBefore[id] !== !!tileManager.used) tileManager.fire(new Event("data", {
+			if (!!managersUsedBefore[id] !== !!tileManager.used) tileManager.fire(new MapSourceDataEvent("data", {
 				sourceDataType: "visibility",
-				dataType: "source",
 				sourceId: id
 			}));
 		}
@@ -12772,7 +12992,7 @@ var Style = class extends Evented {
 		this.sky.recalculate(parameters);
 		this.projection.recalculate(parameters);
 		this.z = parameters.zoom;
-		if (changed) this.fire(new Event("data", { dataType: "style" }));
+		if (changed) this.fire(new MapStyleDataEvent("data"));
 	}
 	_updateTilesForChangedImages() {
 		const changedImages = Object.keys(this._changedImages);
@@ -12825,7 +13045,7 @@ var Style = class extends Evented {
 		for (const styleChangeOperation of operations.operations) styleChangeOperation();
 		this.stylesheet = nextState;
 		this._serializedLayers = null;
-		this.fire(new Event("style.load", { style: this }));
+		this.fire(new MapStyleLoadEvent({ style: this }));
 		return true;
 	}
 	_getOperationsToPerform(diff) {
@@ -12924,7 +13144,7 @@ var Style = class extends Evented {
 		this._changedImages[id] = true;
 		this._changed = true;
 		this.dispatcher.broadcast("SI", this._availableImages);
-		this.fire(new Event("data", { dataType: "style" }));
+		this.fire(new MapStyleDataEvent("data"));
 	}
 	listImages() {
 		this._checkLoaded();
@@ -12964,9 +13184,8 @@ var Style = class extends Evented {
 		const tileManager = this.tileManagers[id];
 		delete this.tileManagers[id];
 		delete this._updatedSources[id];
-		tileManager.fire(new Event("data", {
+		tileManager.fire(new MapSourceDataEvent("data", {
 			sourceDataType: "metadata",
-			dataType: "source",
 			sourceId: id
 		}));
 		tileManager.setEventedParent(null);
@@ -13608,7 +13827,7 @@ var Style = class extends Evented {
 		this._availableImages = this.imageManager.listImages();
 		this._changed = true;
 		this.dispatcher.broadcast("SI", this._availableImages);
-		this.fire(new Event("data", { dataType: "style" }));
+		this.fire(new MapStyleDataEvent("data"));
 	}
 	/**
 	* Get the current sprite value.
@@ -14393,6 +14612,16 @@ function calculateTranslation(painter, tile, layer) {
 	return translatePosition(painter.transform, tile, layer.paint.get("line-translate"), layer.paint.get("line-translate-anchor"));
 }
 //#endregion
+//#region src/webgl/program/layer_opacity_program.ts
+const layerOpacityUniforms = (context, locations) => ({
+	"u_image": new Uniform1i(context, locations.u_image),
+	"u_opacity": new Uniform1f(context, locations.u_opacity)
+});
+const layerOpacityUniformValues = (opacity, textureUnit) => ({
+	"u_image": textureUnit,
+	"u_opacity": opacity
+});
+//#endregion
 //#region src/webgl/program/raster_program.ts
 const rasterUniforms = (context, locations) => ({
 	"u_tl_parent": new Uniform2f(context, locations.u_tl_parent),
@@ -14667,6 +14896,7 @@ const programUniforms = {
 	linePattern: linePatternUniforms,
 	lineSDF: lineSDFUniforms,
 	lineGradientSDF: lineGradientSDFUniforms,
+	layerOpacity: layerOpacityUniforms,
 	raster: rasterUniforms,
 	symbolIcon: symbolIconUniforms,
 	symbolSDF: symbolSDFUniforms,
@@ -16019,6 +16249,77 @@ function getColorRampTexture(context, layer) {
 	return layer.colorRampTexture;
 }
 //#endregion
+//#region src/webgl/draw/draw_layer_opacity.ts
+/**
+* Partial line-layer-opacity
+* render the whole layer to a scratch FBO, then composite with `layerOpacity`.
+* Applies opacity uniformly to the layer instead of accumulating alpha across overlapping segments.
+*/
+function prepareDrawLayerOpacity(painter, layer, coords, terrain) {
+	const context = painter.context;
+	const compositeTarget = context.bindFramebuffer.get();
+	const compositeViewport = context.viewport.get();
+	const [, , width, height] = compositeViewport;
+	bindLayerOpacity(painter, width, height);
+	context.viewport.set([
+		0,
+		0,
+		width,
+		height
+	]);
+	context.clear({
+		color: Color.transparent,
+		depth: 1,
+		stencil: 0
+	});
+	painter.currentStencilSource = void 0;
+	painter.renderTileClippingMasks(layer, coords, terrain);
+	return {
+		compositeTarget,
+		compositeViewport
+	};
+}
+function bindLayerOpacity(painter, width, height) {
+	const gl = painter.context.gl;
+	if (!painter.layerOpacityFbo) {
+		const fbo = painter.context.createFramebuffer(width, height, true, true);
+		const texture = gl.createTexture();
+		gl.bindTexture(gl.TEXTURE_2D, texture);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+		fbo.colorAttachment.set(texture);
+		fbo.depthAttachment.set(painter.context.createRenderbuffer(gl.DEPTH_STENCIL, width, height));
+		painter.layerOpacityFbo = fbo;
+		painter.context.bindFramebuffer.set(painter.layerOpacityFbo.framebuffer);
+		return;
+	}
+	if (painter.layerOpacityFbo.width === width && painter.layerOpacityFbo.height === height) {
+		painter.context.bindFramebuffer.set(painter.layerOpacityFbo.framebuffer);
+		return;
+	}
+	const fbo = painter.layerOpacityFbo;
+	gl.bindTexture(gl.TEXTURE_2D, fbo.colorAttachment.get());
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+	painter.context.bindRenderbuffer.set(fbo.depthAttachment.get());
+	gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_STENCIL, width, height);
+	painter.context.bindRenderbuffer.set(null);
+	fbo.width = width;
+	fbo.height = height;
+	painter.context.bindFramebuffer.set(fbo.framebuffer);
+}
+function drawLayerOpacity(painter, opacity, prepareDrawLayerOpacityResult, layer) {
+	const context = painter.context;
+	const gl = context.gl;
+	context.bindFramebuffer.set(prepareDrawLayerOpacityResult.compositeTarget);
+	context.viewport.set(prepareDrawLayerOpacityResult.compositeViewport);
+	context.activeTexture.set(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, painter.layerOpacityFbo.colorAttachment.get());
+	painter.useProgram("layerOpacity").draw(context, gl.TRIANGLES, DepthMode.disabled, StencilMode.disabled, painter.colorModeForRenderPass(), CullFaceMode.disabled, layerOpacityUniformValues(opacity, 0), null, null, layer.id, painter.viewportBuffer, painter.quadTriangleIndexBuffer, painter.viewportSegments, layer.paint, painter.transform.zoom);
+}
+//#endregion
 //#region src/webgl/draw/draw_line.ts
 function updateGradientTexture(painter, tileManager, context, gl, layer, bucket, coord, layerGradient) {
 	let textureResolution = 256;
@@ -16072,8 +16373,16 @@ function drawLine(painter, tileManager, layer, coords, renderOptions) {
 	if (painter.renderPass !== "translucent") return;
 	const opacity = layer.paint.get("line-opacity");
 	const width = layer.paint.get("line-width");
-	if (opacity.constantOr(1) === 0 || width.constantOr(1) === 0) return;
-	drawLineTiles(painter, tileManager, layer, coords, renderOptions, !!painter.style.map.terrain);
+	const layerOpacity = layer.paint.get("line-layer-opacity");
+	if (opacity.constantOr(1) === 0 || width.constantOr(1) === 0 || layerOpacity === 0) return;
+	const useTerrain = !!painter.style.map.terrain;
+	if (layerOpacity < 1) {
+		const results = prepareDrawLayerOpacity(painter, layer, coords, useTerrain);
+		drawLineTiles(painter, tileManager, layer, coords, renderOptions, useTerrain);
+		drawLayerOpacity(painter, layerOpacity, results, layer);
+		return;
+	}
+	drawLineTiles(painter, tileManager, layer, coords, renderOptions, useTerrain);
 }
 function drawLineTiles(painter, tileManager, layer, coords, renderOptions, useTerrain) {
 	const { isRenderingToTexture } = renderOptions;
@@ -16177,7 +16486,15 @@ function updatePatternPositionsInProgram(programConfiguration, propertyName, con
 function drawFill(painter, tileManager, layer, coords, renderOptions) {
 	const color = layer.paint.get("fill-color");
 	const opacity = layer.paint.get("fill-opacity");
-	if (opacity.constantOr(1) === 0) return;
+	const layerOpacity = layer.paint.get("fill-layer-opacity");
+	if (opacity.constantOr(1) === 0 || layerOpacity === 0) return;
+	if (layerOpacity < 1) {
+		if (painter.renderPass !== "translucent") return;
+		const results = prepareDrawLayerOpacity(painter, layer, coords, !!painter.style.map.terrain);
+		drawFillAndOutline(painter, tileManager, layer, coords, renderOptions);
+		drawLayerOpacity(painter, layerOpacity, results, layer);
+		return;
+	}
 	const pattern = layer.paint.get("fill-pattern");
 	const fillEligibleForOpaque = painter.opaquePassEnabledForLayer() && !pattern.constantOr(1) && color.constantOr(Color.transparent).a === 1 && opacity.constantOr(0) === 1;
 	if (fillEligibleForOpaque && painter.renderPass === "opaque") {
@@ -16194,6 +16511,8 @@ function drawFill(painter, tileManager, layer, coords, renderOptions) {
 }
 /**
 * Draw fill + outline in a single translucent pass with ReadOnly depth.
+* Shared by the layer-opacity subpass (always) and the normal translucent path
+* (when the fill is not opaque-pass-eligible).
 */
 function drawFillAndOutline(painter, tileManager, layer, coords, renderOptions) {
 	const { isRenderingToTexture } = renderOptions;
@@ -17038,6 +17357,7 @@ var Painter = class Painter {
 		this.drawFunctions = webglDrawFunctions;
 		this.context = new Context(gl);
 		this.transform = transform;
+		this.layerOpacityFbo = null;
 		this._tileTextures = {};
 		this._rttObjectRecyclePool = [];
 		this._rttSharedFbo = null;
@@ -17150,7 +17470,7 @@ var Painter = class Painter {
 		};
 		this.useProgram("clippingMask", null, true).draw(context, gl.TRIANGLES, DepthMode.disabled, this.stencilClearMode, ColorMode.disabled, CullFaceMode.disabled, null, null, projectionData, "$clipping", this.viewportBuffer, this.quadTriangleIndexBuffer, this.viewportSegments);
 	}
-	_renderTileClippingMasks(layer, tileIDs, renderToTexture) {
+	renderTileClippingMasks(layer, tileIDs, renderToTexture) {
 		if (this.currentStencilSource === layer.source || !layer.isTileClipped() || !tileIDs?.length) return;
 		this.currentStencilSource = layer.source;
 		if (this.nextStencilID + tileIDs.length > 256) this.clearStencil();
@@ -17376,7 +17696,7 @@ var Painter = class Painter {
 				const layer = this.style._layers[layerIds[this.currentLayer]];
 				const tileManager = tileManagers[layer.source];
 				const coords = coordsAscending[layer.source];
-				this._renderTileClippingMasks(layer, coords, false);
+				this.renderTileClippingMasks(layer, coords, false);
 				this.renderLayer(this, tileManager, layer, coords, renderOptions);
 			}
 		}
@@ -17391,7 +17711,7 @@ var Painter = class Painter {
 				if (renderOptions.isRenderingGlobe && !this.style.map.terrain) this._renderTilesDepthBuffer();
 			}
 			const coords = (layer.type === "symbol" ? coordsDescendingSymbol : coordsDescending)[layer.source];
-			this._renderTileClippingMasks(layer, coordsAscending[layer.source], !!this.renderToTexture);
+			this.renderTileClippingMasks(layer, coordsAscending[layer.source], !!this.renderToTexture);
 			this.renderLayer(this, tileManager, layer, coords, renderOptions);
 		}
 		if (renderOptions.isRenderingGlobe) this.drawFunctions.atmosphere(this, this.style.sky, this.style.light);
@@ -17596,6 +17916,8 @@ var Painter = class Painter {
 			gl.deleteFramebuffer(this._rttSharedFbo.fbo.framebuffer);
 			this._rttSharedFbo = null;
 		}
+		this.layerOpacityFbo?.destroy();
+		this.layerOpacityFbo = null;
 		if (this.tileExtentBuffer) this.tileExtentBuffer.destroy();
 		if (this.debugBuffer) this.debugBuffer.destroy();
 		if (this.rasterBoundsBuffer) this.rasterBoundsBuffer.destroy();
@@ -17882,126 +18204,6 @@ function calculateEasing(amount, inertiaDuration, inertiaOptions) {
 	};
 }
 //#endregion
-//#region src/ui/events.ts
-/**
-* `MapMouseEvent` is the event type for mouse-related map events.
-*
-* @group Event Related
-*
-* @example
-* ```ts
-* // The `click` event is an example of a `MapMouseEvent`.
-* // Set up an event listener on the map.
-* map.on('click', (e) => {
-*   // The event object (e) contains information like the
-*   // coordinates of the point on the map that was clicked.
-*   console.log('A click event has occurred at ' + e.lngLat);
-* });
-* ```
-*/
-var MapMouseEvent = class extends Event {
-	/**
-	* Prevents subsequent default processing of the event by the map.
-	*
-	* Calling this method will prevent the following default map behaviors:
-	*
-	*   * On `mousedown` events, the behavior of {@link DragPanHandler}
-	*   * On `mousedown` events, the behavior of {@link DragRotateHandler}
-	*   * On `mousedown` events, the behavior of {@link BoxZoomHandler}
-	*   * On `dblclick` events, the behavior of {@link DoubleClickZoomHandler}
-	*
-	*/
-	preventDefault() {
-		this._defaultPrevented = true;
-	}
-	/**
-	* `true` if `preventDefault` has been called.
-	*/
-	get defaultPrevented() {
-		return this._defaultPrevented;
-	}
-	constructor(type, map, originalEvent, data = {}) {
-		originalEvent = originalEvent instanceof MouseEvent ? originalEvent : new MouseEvent(type, originalEvent);
-		const point = DOM.mousePos(map.getCanvas(), originalEvent);
-		const lngLat = map.unproject(point);
-		super(type, extend({
-			point,
-			lngLat,
-			originalEvent
-		}, data));
-		this._defaultPrevented = false;
-		this.target = map;
-	}
-};
-/**
-* `MapTouchEvent` is the event type for touch-related map events.
-*
-* @group Event Related
-*/
-var MapTouchEvent = class extends Event {
-	/**
-	* Prevents subsequent default processing of the event by the map.
-	*
-	* Calling this method will prevent the following default map behaviors:
-	*
-	*   * On `touchstart` events, the behavior of {@link DragPanHandler}
-	*   * On `touchstart` events, the behavior of {@link TwoFingersTouchZoomRotateHandler}
-	*
-	*/
-	preventDefault() {
-		this._defaultPrevented = true;
-	}
-	/**
-	* `true` if `preventDefault` has been called.
-	*/
-	get defaultPrevented() {
-		return this._defaultPrevented;
-	}
-	constructor(type, map, originalEvent) {
-		const touches = type === "touchend" ? originalEvent.changedTouches : originalEvent.touches;
-		const points = DOM.touchPos(map.getCanvasContainer(), touches);
-		const lngLats = points.map((t) => map.unproject(t));
-		const point = points.reduce((prev, curr, i, arr) => {
-			return prev.add(curr.div(arr.length));
-		}, new Point(0, 0));
-		const lngLat = map.unproject(point);
-		super(type, {
-			points,
-			point,
-			lngLats,
-			lngLat,
-			originalEvent
-		});
-		this._defaultPrevented = false;
-	}
-};
-/**
-* `MapWheelEvent` is the event type for the `wheel` map event.
-*
-* @group Event Related
-*/
-var MapWheelEvent = class extends Event {
-	/**
-	* Prevents subsequent default processing of the event by the map.
-	*
-	* Calling this method will prevent the behavior of {@link ScrollZoomHandler}.
-	*/
-	preventDefault() {
-		this._defaultPrevented = true;
-	}
-	/**
-	* `true` if `preventDefault` has been called.
-	*/
-	get defaultPrevented() {
-		return this._defaultPrevented;
-	}
-	/** */
-	constructor(type, map, originalEvent) {
-		super(type, { originalEvent });
-		this._defaultPrevented = false;
-	}
-};
-//#endregion
 //#region src/ui/handler/map_event.ts
 var MapEventHandler = class {
 	constructor(map, options) {
@@ -18012,7 +18214,7 @@ var MapEventHandler = class {
 		delete this._mousedownPos;
 	}
 	wheel(e) {
-		return this._firePreventable(new MapWheelEvent(e.type, this._map, e));
+		return this._firePreventable(new MapWheelEvent(this._map, e));
 	}
 	mousedown(e, point) {
 		this._mousedownPos = point;
@@ -18220,7 +18422,7 @@ var BoxZoomHandler = class {
 		DOM.suppressClick();
 		if (p0.x === p1.x && p0.y === p1.y) this._fireEvent("boxzoomcancel", e);
 		else {
-			this._map.fire(new Event("boxzoomend", { originalEvent: e }));
+			this._map.fire(new MapBoxZoomEvent("boxzoomend", { originalEvent: e }));
 			if (this._boxZoomEnd) {
 				this._boxZoomEnd(this._map, p0, p1, e);
 				return;
@@ -18247,7 +18449,7 @@ var BoxZoomHandler = class {
 		delete this._lastPos;
 	}
 	_fireEvent(type, e) {
-		return this._map.fire(new Event(type, { originalEvent: e }));
+		return this._map.fire(new MapBoxZoomEvent(type, { originalEvent: e }));
 	}
 };
 //#endregion
@@ -19851,7 +20053,7 @@ var CooperativeGesturesHandler = class {
 	}
 	notifyGestureBlocked(gestureType, originalEvent) {
 		if (!this._enabled) return;
-		this._map.fire(new Event("cooperativegestureprevented", {
+		this._map.fire(new MapLibreEvent("cooperativegestureprevented", {
 			gestureType,
 			originalEvent
 		}));
@@ -20278,14 +20480,14 @@ var HandlerManager = class {
 				inertialEase.freezeElevation = true;
 				this._map.easeTo(inertialEase, { originalEvent: originalEndEvent });
 			} else {
-				this._map.fire(new Event("moveend", { originalEvent: originalEndEvent }));
+				this._map.fire(new MapMovementEvent("moveend", { originalEvent: originalEndEvent }));
 				if (shouldSnapToNorth(this._map.getBearing())) this._map.resetNorth();
 			}
 			this._updatingCamera = false;
 		}
 	}
 	_fireEvent(type, e) {
-		this._map.fire(new Event(type, e ? { originalEvent: e } : {}));
+		this._map.fire(new MapMovementEvent(type, e ? { originalEvent: e } : {}));
 	}
 	_requestFrame() {
 		this._map.triggerRepaint();
@@ -20551,7 +20753,7 @@ var Camera = class extends Evented {
 	setVerticalFieldOfView(fov, eventData) {
 		if (fov != this.transform.fov) {
 			this.transform.setFov(fov);
-			this.fire(new Event("movestart", eventData)).fire(new Event("move", eventData)).fire(new Event("moveend", eventData));
+			this.fire(new MapMovementEvent("movestart", eventData)).fire(new MapMovementEvent("move", eventData)).fire(new MapMovementEvent("moveend", eventData));
 		}
 		return this;
 	}
@@ -20899,12 +21101,12 @@ var Camera = class extends Evented {
 		}
 		if (options.padding != null && !tr.isPaddingEqual(options.padding)) tr.setPadding(options.padding);
 		this._applyUpdatedTransform(tr);
-		this.fire(new Event("movestart", eventData)).fire(new Event("move", eventData));
-		if (zoomChanged) this.fire(new Event("zoomstart", eventData)).fire(new Event("zoom", eventData)).fire(new Event("zoomend", eventData));
-		if (bearingChanged) this.fire(new Event("rotatestart", eventData)).fire(new Event("rotate", eventData)).fire(new Event("rotateend", eventData));
-		if (pitchChanged) this.fire(new Event("pitchstart", eventData)).fire(new Event("pitch", eventData)).fire(new Event("pitchend", eventData));
-		if (rollChanged) this.fire(new Event("rollstart", eventData)).fire(new Event("roll", eventData)).fire(new Event("rollend", eventData));
-		return this.fire(new Event("moveend", eventData));
+		this.fire(new MapMovementEvent("movestart", eventData)).fire(new MapMovementEvent("move", eventData));
+		if (zoomChanged) this.fire(new MapMovementEvent("zoomstart", eventData)).fire(new MapMovementEvent("zoom", eventData)).fire(new MapMovementEvent("zoomend", eventData));
+		if (bearingChanged) this.fire(new MapMovementEvent("rotatestart", eventData)).fire(new MapMovementEvent("rotate", eventData)).fire(new MapMovementEvent("rotateend", eventData));
+		if (pitchChanged) this.fire(new MapMovementEvent("pitchstart", eventData)).fire(new MapMovementEvent("pitch", eventData)).fire(new MapMovementEvent("pitchend", eventData));
+		if (rollChanged) this.fire(new MapMovementEvent("rollstart", eventData)).fire(new MapMovementEvent("roll", eventData)).fire(new MapMovementEvent("rollend", eventData));
+		return this.fire(new MapMovementEvent("moveend", eventData));
 	}
 	/**
 	* Given a camera 'from' position and a position to look at (`to`), calculates zoom and camera rotation and returns them as {@link CameraOptions}.
@@ -21053,11 +21255,11 @@ var Camera = class extends Evented {
 	}
 	_prepareEase(eventData, noMoveStart, currently = {}) {
 		this._moving = true;
-		if (!noMoveStart && !currently.moving) this.fire(new Event("movestart", eventData));
-		if (this._zooming && !currently.zooming) this.fire(new Event("zoomstart", eventData));
-		if (this._rotating && !currently.rotating) this.fire(new Event("rotatestart", eventData));
-		if (this._pitching && !currently.pitching) this.fire(new Event("pitchstart", eventData));
-		if (this._rolling && !currently.rolling) this.fire(new Event("rollstart", eventData));
+		if (!noMoveStart && !currently.moving) this.fire(new MapMovementEvent("movestart", eventData));
+		if (this._zooming && !currently.zooming) this.fire(new MapMovementEvent("zoomstart", eventData));
+		if (this._rotating && !currently.rotating) this.fire(new MapMovementEvent("rotatestart", eventData));
+		if (this._pitching && !currently.pitching) this.fire(new MapMovementEvent("pitchstart", eventData));
+		if (this._rolling && !currently.rolling) this.fire(new MapMovementEvent("rollstart", eventData));
 	}
 	_prepareElevation(center) {
 		this._elevationCenter = center;
@@ -21147,11 +21349,11 @@ var Camera = class extends Evented {
 		this.transform.apply(finalTransform, false);
 	}
 	_fireMoveEvents(eventData) {
-		this.fire(new Event("move", eventData));
-		if (this._zooming) this.fire(new Event("zoom", eventData));
-		if (this._rotating) this.fire(new Event("rotate", eventData));
-		if (this._pitching) this.fire(new Event("pitch", eventData));
-		if (this._rolling) this.fire(new Event("roll", eventData));
+		this.fire(new MapMovementEvent("move", eventData));
+		if (this._zooming) this.fire(new MapMovementEvent("zoom", eventData));
+		if (this._rotating) this.fire(new MapMovementEvent("rotate", eventData));
+		if (this._pitching) this.fire(new MapMovementEvent("pitch", eventData));
+		if (this._rolling) this.fire(new MapMovementEvent("roll", eventData));
 	}
 	_afterEase(eventData, easeId) {
 		if (this._easeId && easeId && this._easeId === easeId) return;
@@ -21166,11 +21368,11 @@ var Camera = class extends Evented {
 		this._pitching = false;
 		this._rolling = false;
 		this._padding = false;
-		if (wasZooming) this.fire(new Event("zoomend", eventData));
-		if (wasRotating) this.fire(new Event("rotateend", eventData));
-		if (wasPitching) this.fire(new Event("pitchend", eventData));
-		if (wasRolling) this.fire(new Event("rollend", eventData));
-		this.fire(new Event("moveend", eventData));
+		if (wasZooming) this.fire(new MapMovementEvent("zoomend", eventData));
+		if (wasRotating) this.fire(new MapMovementEvent("rotateend", eventData));
+		if (wasPitching) this.fire(new MapMovementEvent("pitchend", eventData));
+		if (wasRolling) this.fire(new MapMovementEvent("rollend", eventData));
+		this.fire(new MapMovementEvent("moveend", eventData));
 	}
 	/**
 	* Changes any combination of center, zoom, bearing, pitch, and roll, animating the transition along a curve that
@@ -21252,10 +21454,8 @@ var Camera = class extends Evented {
 		const w0 = Math.max(tr.width, tr.height);
 		const w1 = w0 / flyToHandler.scaleOfZoom;
 		const u1 = flyToHandler.pixelPathLength;
-		if (typeof flyToHandler.scaleOfMinZoom === "number") {
-			const wMax = w0 / flyToHandler.scaleOfMinZoom;
-			rho = Math.min(rho, Math.sqrt(wMax / u1 * 2));
-		}
+		const wMax = w0 / flyToHandler.scaleOfMinZoom;
+		rho = Math.min(rho, Math.sqrt(wMax / u1 * 2));
 		const rho2 = rho * rho;
 		/**
 		* rᵢ: Returns the zoom-out factor at one end of the animation.
@@ -21412,7 +21612,7 @@ var AttributionControl = class {
 			}
 		};
 		this._updateData = (e) => {
-			if (e && (e.sourceDataType === "metadata" || e.sourceDataType === "visibility" || e.dataType === "style" || e.type === "terrain")) this._updateAttributions();
+			if (e && (e.type === "terrain" || e.dataType === "style" || e.dataType === "source" && (e.sourceDataType === "metadata" || e.sourceDataType === "visibility"))) this._updateAttributions();
 		};
 		this._updateCompact = () => {
 			if (this._map.getCanvasContainer().offsetWidth <= 640 || this._compact) {
@@ -22395,7 +22595,7 @@ var RenderToTexture = class {
 						this.rttSize,
 						this.rttSize
 					]);
-					painter._renderTileClippingMasks(layer, coords, true);
+					painter.renderTileClippingMasks(layer, coords, true);
 					painter.renderLayer(painter, painter.style.tileManagers[layer.source], layer, coords, options);
 					if (layer.source) tile.rttFingerprint[layer.source] = this._rttFingerprints[layer.source][tile.tileID.key];
 				}
@@ -22586,7 +22786,7 @@ var Map$1 = class extends Camera {
 			this.painter.destroy();
 			this._lostContextStyle = this._getStyleAndImages();
 			if (!this.style) {
-				this.fire(new Event("webglcontextlost", { originalEvent: event }));
+				this.fire(new MapContextEvent("webglcontextlost", { originalEvent: event }));
 				return;
 			}
 			for (const layer of Object.values(this.style._layers)) {
@@ -22595,7 +22795,7 @@ var Map$1 = class extends Camera {
 			}
 			this.style.destroy();
 			this.style = null;
-			this.fire(new Event("webglcontextlost", { originalEvent: event }));
+			this.fire(new MapContextEvent("webglcontextlost", { originalEvent: event }));
 		};
 		this._contextRestored = (event) => {
 			if (this._lostContextStyle.style) this.setStyle(this._lostContextStyle.style, { diff: false });
@@ -22609,7 +22809,7 @@ var Map$1 = class extends Camera {
 			this.resize();
 			this._update();
 			this._resizeInternal();
-			this.fire(new Event("webglcontextrestored", { originalEvent: event }));
+			this.fire(new MapContextEvent("webglcontextrestored", { originalEvent: event }));
 		};
 		this._onMapScroll = (event) => {
 			if (event.target !== this._container) return;
@@ -22704,13 +22904,13 @@ var Map$1 = class extends Camera {
 		});
 		this.on("data", (event) => {
 			this._update(event.dataType === "style");
-			this.fire(new Event(`${event.dataType}data`, event));
+			this.fire(event.dataType === "style" ? new MapStyleDataEvent("styledata", event) : new MapSourceDataEvent("sourcedata", event));
 		});
 		this.on("dataloading", (event) => {
-			this.fire(new Event(`${event.dataType}dataloading`, event));
+			this.fire(event.dataType === "style" ? new MapStyleDataEvent("styledataloading", event) : new MapSourceDataEvent("sourcedataloading", event));
 		});
 		this.on("dataabort", (event) => {
-			this.fire(new Event("sourcedataabort", event));
+			this.fire(new MapSourceDataEvent("sourcedataabort", event));
 		});
 	}
 	/**
@@ -22853,10 +23053,10 @@ var Map$1 = class extends Camera {
 		const fireMoving = !this._moving;
 		if (fireMoving) {
 			this.stop();
-			this.fire(new Event("movestart", eventData)).fire(new Event("move", eventData));
+			this.fire(new MapMovementEvent("movestart", eventData)).fire(new MapMovementEvent("move", eventData));
 		}
-		this.fire(new Event("resize", eventData));
-		if (fireMoving) this.fire(new Event("moveend", eventData));
+		this.fire(new MapLibreEvent("resize", eventData));
+		if (fireMoving) this.fire(new MapMovementEvent("moveend", eventData));
 		return this;
 	}
 	/**
@@ -23000,7 +23200,7 @@ var Map$1 = class extends Camera {
 			tr.setMinZoom(minZoom);
 			this._applyUpdatedTransform(tr);
 			this._update();
-			if (zoomBefore !== this.transform.zoom) this.fire(new Event("zoomstart")).fire(new Event("zoom")).fire(new Event("zoomend")).fire(new Event("movestart")).fire(new Event("move")).fire(new Event("moveend"));
+			if (zoomBefore !== this.transform.zoom) this.fire(new MapMovementEvent("zoomstart")).fire(new MapMovementEvent("zoom")).fire(new MapMovementEvent("zoomend")).fire(new MapMovementEvent("movestart")).fire(new MapMovementEvent("move")).fire(new MapMovementEvent("moveend"));
 			return this;
 		} else throw new Error(`minZoom must be between ${defaultMinZoom} and the current maxZoom, inclusive`);
 	}
@@ -23039,7 +23239,7 @@ var Map$1 = class extends Camera {
 			tr.setMaxZoom(maxZoom);
 			this._applyUpdatedTransform(tr);
 			this._update();
-			if (zoomBefore !== this.transform.zoom) this.fire(new Event("zoomstart")).fire(new Event("zoom")).fire(new Event("zoomend")).fire(new Event("movestart")).fire(new Event("move")).fire(new Event("moveend"));
+			if (zoomBefore !== this.transform.zoom) this.fire(new MapMovementEvent("zoomstart")).fire(new MapMovementEvent("zoom")).fire(new MapMovementEvent("zoomend")).fire(new MapMovementEvent("movestart")).fire(new MapMovementEvent("move")).fire(new MapMovementEvent("moveend"));
 			return this;
 		} else throw new Error("maxZoom must be greater than the current minZoom");
 	}
@@ -23075,7 +23275,7 @@ var Map$1 = class extends Camera {
 			tr.setMinPitch(minPitch);
 			this._applyUpdatedTransform(tr);
 			this._update();
-			if (pitchBefore !== this.transform.pitch) this.fire(new Event("pitchstart")).fire(new Event("pitch")).fire(new Event("pitchend")).fire(new Event("movestart")).fire(new Event("move")).fire(new Event("moveend"));
+			if (pitchBefore !== this.transform.pitch) this.fire(new MapMovementEvent("pitchstart")).fire(new MapMovementEvent("pitch")).fire(new MapMovementEvent("pitchend")).fire(new MapMovementEvent("movestart")).fire(new MapMovementEvent("move")).fire(new MapMovementEvent("moveend"));
 			return this;
 		} else throw new Error(`minPitch must be between ${defaultMinPitch} and the current maxPitch, inclusive`);
 	}
@@ -23107,7 +23307,7 @@ var Map$1 = class extends Camera {
 			tr.setMaxPitch(maxPitch);
 			this._applyUpdatedTransform(tr);
 			this._update();
-			if (pitchBefore !== this.transform.pitch) this.fire(new Event("pitchstart")).fire(new Event("pitch")).fire(new Event("pitchend")).fire(new Event("movestart")).fire(new Event("move")).fire(new Event("moveend"));
+			if (pitchBefore !== this.transform.pitch) this.fire(new MapMovementEvent("pitchstart")).fire(new MapMovementEvent("pitch")).fire(new MapMovementEvent("pitchend")).fire(new MapMovementEvent("movestart")).fire(new MapMovementEvent("move")).fire(new MapMovementEvent("moveend"));
 			return this;
 		} else throw new Error("maxPitch must be greater than the current minPitch");
 	}
@@ -23819,7 +24019,7 @@ var Map$1 = class extends Camera {
 			};
 			this.style.on("data", this._terrainDataCallback);
 		}
-		this.fire(new Event("terrain", { terrain: options }));
+		this.fire(new MapTerrainEvent({ terrain: options }));
 		return this;
 	}
 	/**
@@ -24793,7 +24993,7 @@ var Map$1 = class extends Camera {
 	migrateProjection(newTransform, newCameraHelper) {
 		super.migrateProjection(newTransform, newCameraHelper);
 		this.painter.transform = newTransform;
-		this.fire(new Event("projectiontransition", { newProjection: this.style.projection.name }));
+		this.fire(new MapProjectionEvent({ newProjection: this.style.projection.name }));
 	}
 	/**
 	* Returns a Boolean indicating whether the map is fully loaded.
@@ -24898,16 +25098,16 @@ var Map$1 = class extends Camera {
 			showPadding: this.showPadding,
 			anisotropicFilterPitch: this.getAnisotropicFilterPitch()
 		});
-		this.fire(new Event("render"));
+		this.fire(new MapLibreEvent("render"));
 		if (this.loaded() && !this._loaded) {
 			this._loaded = true;
-			this.fire(new Event("load"));
+			this.fire(new MapLibreEvent("load"));
 		}
 		if (this.style && (this.style.hasTransitions() || crossFading)) this._styleDirty = true;
 		if (this.style && !this._placementDirty) this.style._releaseSymbolFadeTiles();
 		const somethingDirty = this._sourcesDirty || this._styleDirty || this._placementDirty;
 		if (somethingDirty || this._repaint) this.triggerRepaint();
-		else if (!this.isMoving() && this.loaded()) this.fire(new Event("idle"));
+		else if (!this.isMoving() && this.loaded()) this.fire(new MapLibreEvent("idle"));
 		if (this._loaded && !this._fullyLoaded && !somethingDirty) this._fullyLoaded = true;
 		return this;
 	}
@@ -24963,7 +25163,7 @@ var Map$1 = class extends Camera {
 		this._container.removeEventListener("scroll", this._onMapScroll, false);
 		this._container.classList.remove("maplibregl-map");
 		this._removed = true;
-		this.fire(new Event("remove"));
+		this.fire(new MapLibreEvent("remove"));
 	}
 	/**
 	* Trigger the rendering of a single frame. Use this method with custom layers to
@@ -25384,6 +25584,18 @@ function applyAnchorClass(element, anchor, prefix) {
 //#endregion
 //#region src/ui/marker.ts
 /**
+* The event class for marker drag events (`dragstart`, `drag` and `dragend`).
+*
+* @group Event Related
+*/
+var MarkerDragEvent = class extends Event {};
+/**
+* The event class for the marker `click` event.
+*
+* @group Event Related
+*/
+var MarkerClickEvent = class extends Event {};
+/**
 * Creates a marker component
 *
 * @group Markers and Controls
@@ -25412,13 +25624,13 @@ function applyAnchorClass(element, anchor, prefix) {
 *
 * ## Events
 *
-* **Event** `dragstart` of type {@link Event} will be fired when dragging starts.
+* **Event** `dragstart` of type {@link MarkerDragEvent} will be fired when dragging starts.
 *
-* **Event** `drag` of type {@link Event} will be fired while dragging.
+* **Event** `drag` of type {@link MarkerDragEvent} will be fired while dragging.
 *
-* **Event** `dragend` of type {@link Event} will be fired when the marker is finished being dragged.
+* **Event** `dragend` of type {@link MarkerDragEvent} will be fired when the marker is finished being dragged.
 *
-* **Event** `click` of type {@link Event} will be fired when the marker is clicked.
+* **Event** `click` of type {@link MarkerClickEvent} will be fired when the marker is clicked.
 *
 * ## CSS Classes
 *
@@ -25441,7 +25653,7 @@ var Marker = class extends Evented {
 	constructor(options) {
 		super();
 		this._onClick = (e) => {
-			this.fire(new Event("click", { originalEvent: e }));
+			this.fire(new MarkerClickEvent("click", { originalEvent: e }));
 		};
 		this._onKeyPress = (e) => {
 			if (e.code === "Space" || e.code === "Enter") this.togglePopup();
@@ -25482,9 +25694,9 @@ var Marker = class extends Evented {
 			this._element.style.pointerEvents = "none";
 			if (this._state === "pending") {
 				this._state = "active";
-				this.fire(new Event("dragstart"));
+				this.fire(new MarkerDragEvent("dragstart"));
 			}
-			this.fire(new Event("drag"));
+			this.fire(new MarkerDragEvent("drag"));
 		};
 		this._onUp = () => {
 			this._element.style.pointerEvents = "auto";
@@ -25493,7 +25705,7 @@ var Marker = class extends Evented {
 			this._isDragging = false;
 			this._map.off("mousemove", this._onMove);
 			this._map.off("touchmove", this._onMove);
-			if (this._state === "active") this.fire(new Event("dragend"));
+			if (this._state === "active") this.fire(new MarkerDragEvent("dragend"));
 			this._state = "inactive";
 		};
 		this._addDragHandler = (e) => {
@@ -26037,6 +26249,27 @@ const defaultOptions$2 = {
 let numberOfWatches = 0;
 let noTimeout = false;
 /**
+* The event class for geolocate control state events
+* (`trackuserlocationstart`, `trackuserlocationend`, `userlocationfocus` and `userlocationlostfocus`).
+*
+* @group Event Related
+*/
+var GeolocateEvent = class extends Event {};
+/**
+* The event class for the geolocate control `geolocate` and `outofmaxbounds` events.
+* Carries the [Position](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition) returned by the Geolocation API.
+*
+* @group Event Related
+*/
+var GeolocatePositionEvent = class extends Event {};
+/**
+* The event class for the geolocate control `error` event.
+* Carries the [PositionError](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPositionError) returned by the Geolocation API.
+*
+* @group Event Related
+*/
+var GeolocateErrorEvent = class extends Event {};
+/**
 * A `GeolocateControl` control provides a button that uses the browser's geolocation
 * API to locate the user on the map.
 *
@@ -26226,7 +26459,7 @@ var GeolocateControl = class extends Evented {
 			if (!this._map) return;
 			if (this._isOutOfMapMaxBounds(position)) {
 				this._setErrorState();
-				this.fire(new Event("outofmaxbounds", position));
+				this.fire(new GeolocatePositionEvent("outofmaxbounds", position));
 				this._updateMarker();
 				this._finish();
 				return;
@@ -26255,7 +26488,7 @@ var GeolocateControl = class extends Evented {
 			if (this.options.showUserLocation && this._watchState !== "OFF") this._updateMarker(position);
 			if (!this.options.trackUserLocation || this._watchState === "ACTIVE_LOCK") this._updateCamera(position);
 			if (this.options.showUserLocation) this._dotElement.classList.remove("maplibregl-user-location-dot-stale");
-			this.fire(new Event("geolocate", position));
+			this.fire(new GeolocatePositionEvent("geolocate", position));
 			this._finish();
 		};
 		this._updateCamera = (position) => {
@@ -26297,7 +26530,7 @@ var GeolocateControl = class extends Evented {
 			} else if (error.code === 3 && noTimeout) return;
 			else this._setErrorState();
 			if (this._watchState !== "OFF" && this.options.showUserLocation) this._dotElement.classList.add("maplibregl-user-location-dot-stale");
-			this.fire(new Event("error", error));
+			this.fire(new GeolocateErrorEvent("error", error));
 			this._finish();
 		};
 		this._finish = () => {
@@ -26311,8 +26544,8 @@ var GeolocateControl = class extends Evented {
 				this._watchState = "BACKGROUND";
 				this._geolocateButton.classList.add("maplibregl-ctrl-geolocate-background");
 				this._geolocateButton.classList.remove("maplibregl-ctrl-geolocate-active");
-				this.fire(new Event("trackuserlocationend"));
-				this.fire(new Event("userlocationlostfocus"));
+				this.fire(new GeolocateEvent("trackuserlocationend"));
+				this.fire(new GeolocateEvent("userlocationlostfocus"));
 			}
 		};
 		this._setupUI = () => {
@@ -26465,7 +26698,7 @@ var GeolocateControl = class extends Evented {
 			switch (this._watchState) {
 				case "OFF":
 					this._watchState = "WAITING_ACTIVE";
-					this.fire(new Event("trackuserlocationstart"));
+					this.fire(new GeolocateEvent("trackuserlocationstart"));
 					break;
 				case "WAITING_ACTIVE":
 				case "ACTIVE_LOCK":
@@ -26479,14 +26712,14 @@ var GeolocateControl = class extends Evented {
 					this._geolocateButton.classList.remove("maplibregl-ctrl-geolocate-active-error");
 					this._geolocateButton.classList.remove("maplibregl-ctrl-geolocate-background");
 					this._geolocateButton.classList.remove("maplibregl-ctrl-geolocate-background-error");
-					this.fire(new Event("trackuserlocationend"));
+					this.fire(new GeolocateEvent("trackuserlocationend"));
 					break;
 				case "BACKGROUND":
 					this._watchState = "ACTIVE_LOCK";
 					this._geolocateButton.classList.remove("maplibregl-ctrl-geolocate-background");
 					if (this._lastKnownPosition) this._updateCamera(this._lastKnownPosition);
-					this.fire(new Event("trackuserlocationstart"));
-					this.fire(new Event("userlocationfocus"));
+					this.fire(new GeolocateEvent("trackuserlocationstart"));
+					this.fire(new GeolocateEvent("userlocationfocus"));
 					break;
 				default: throw new Error(`Unexpected watchState ${this._watchState}`);
 			}
@@ -26626,6 +26859,12 @@ function getRoundNum(num) {
 //#endregion
 //#region src/ui/control/fullscreen_control.ts
 /**
+* The event class for fullscreen control events (`fullscreenstart` and `fullscreenend`).
+*
+* @group Event Related
+*/
+var FullscreenEvent = class extends Event {};
+/**
 * A `FullscreenControl` control contains a button for toggling the map in and out of fullscreen mode.
 * When [requestFullscreen](https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullscreen) is not supported, fullscreen is handled via CSS properties.
 * The map's `cooperativeGestures` option is temporarily disabled while the map
@@ -26642,9 +26881,9 @@ function getRoundNum(num) {
 *
 * ## Events
 *
-* **Event** `fullscreenstart` of type {@link Event} will be fired when fullscreen mode has started.
+* **Event** `fullscreenstart` of type {@link FullscreenEvent} will be fired when fullscreen mode has started.
 *
-* **Event** `fullscreenend` of type {@link Event} will be fired when fullscreen mode has ended.
+* **Event** `fullscreenend` of type {@link FullscreenEvent} will be fired when fullscreen mode has ended.
 */
 var FullscreenControl = class extends Evented {
 	/**
@@ -26709,11 +26948,11 @@ var FullscreenControl = class extends Evented {
 		this._fullscreenButton.classList.toggle("maplibregl-ctrl-fullscreen");
 		this._updateTitle();
 		if (this._fullscreen) {
-			this.fire(new Event("fullscreenstart"));
+			this.fire(new FullscreenEvent("fullscreenstart"));
 			this._prevCooperativeGesturesEnabled = this._map.cooperativeGestures.isEnabled();
 			this._map.cooperativeGestures.disable();
 		} else {
-			this.fire(new Event("fullscreenend"));
+			this.fire(new FullscreenEvent("fullscreenend"));
 			if (this._prevCooperativeGesturesEnabled) this._map.cooperativeGestures.enable();
 		}
 	}
@@ -26876,6 +27115,12 @@ const focusQuerySelector = [
 	"textarea:not([disabled])"
 ].join(", ");
 /**
+* The event class for popup events (`open` and `close`).
+*
+* @group Event Related
+*/
+var PopupEvent = class extends Event {};
+/**
 * A popup component.
 *
 * @group Markers and Controls
@@ -26930,9 +27175,9 @@ const focusQuerySelector = [
 *
 * ## Events
 *
-* **Event** `open` of type {@link Event} will be fired when the popup is opened manually or programmatically.
+* **Event** `open` of type {@link PopupEvent} will be fired when the popup is opened manually or programmatically.
 *
-* **Event** `close` of type {@link Event} will be fired when the popup is closed manually or programmatically.
+* **Event** `close` of type {@link PopupEvent} will be fired when the popup is closed manually or programmatically.
 */
 var Popup = class extends Evented {
 	/**
@@ -26963,7 +27208,7 @@ var Popup = class extends Evented {
 				this._map.off("drag", this._update);
 				this._map._canvasContainer.classList.remove("maplibregl-track-pointer");
 				delete this._map;
-				this.fire(new Event("close"));
+				this.fire(new PopupEvent("close"));
 			}
 			return this;
 		};
@@ -27043,7 +27288,7 @@ var Popup = class extends Evented {
 			if (this._container) this._container.classList.add("maplibregl-popup-track-pointer");
 			this._map._canvasContainer.classList.add("maplibregl-track-pointer");
 		} else this._map.on("move", this._update);
-		this.fire(new Event("open"));
+		this.fire(new PopupEvent("open"));
 		return this;
 	}
 	/**
@@ -27511,6 +27756,6 @@ async function importScriptInWorkers(workerUrl) {
 	await getGlobalDispatcher().broadcast("IS", workerUrl);
 }
 //#endregion
-export { AJAXError, AttributionControl, BoxZoomHandler, CanvasSource, CooperativeGesturesHandler, DoubleClickZoomHandler, DragPanHandler, DragRotateHandler, EXTENT, EdgeInsets, Event, Evented, FullscreenControl, GPUInitializationError, GeoJSONSource, GeolocateControl, GlobeControl, Hash, ImageSource, KeyboardHandler, LngLat, LngLatBounds, LogoControl, Map$1 as Map, Map$1 as MapLibreMap, MapMouseEvent, MapTouchEvent, MapWheelEvent, Marker, MercatorCoordinate, NavigationControl, Point, Popup, RasterDEMTileSource, RasterTileSource, ScaleControl, ScrollZoomHandler, Style, TerrainControl, TwoFingersTouchPitchHandler, TwoFingersTouchRotateHandler, TwoFingersTouchZoomHandler, TwoFingersTouchZoomRotateHandler, VectorTileSource, VideoSource, addProtocol, addSourceType, clearPrewarmedResources, config, createTileMesh, getGlobalDispatcher, getMaxParallelImageRequests, getRTLTextPluginStatus, getVersion, getWorkerCount, getWorkerUrl, importScriptInWorkers, isTimeFrozen, now, prewarm, removeProtocol, restoreNow, setMaxParallelImageRequests, setNow, setRTLTextPlugin, setWorkerCount, setWorkerUrl };
+export { AJAXError, AttributionControl, BoxZoomHandler, CanvasSource, CooperativeGesturesHandler, DoubleClickZoomHandler, DragPanHandler, DragRotateHandler, EXTENT, EdgeInsets, ErrorEvent, Event, Evented, FullscreenControl, FullscreenEvent, GPUInitializationError, GeoJSONSource, GeolocateControl, GeolocateErrorEvent, GeolocateEvent, GeolocatePositionEvent, GlobeControl, Hash, ImageSource, KeyboardHandler, LngLat, LngLatBounds, LogoControl, Map$1 as Map, Map$1 as MapLibreMap, MapBoxZoomEvent, MapContextEvent, MapLibreEvent, MapMouseEvent, MapMovementEvent, MapProjectionEvent, MapSourceDataEvent, MapStyleDataEvent, MapStyleImageMissingEvent, MapStyleLoadEvent, MapTerrainEvent, MapTouchEvent, MapWheelEvent, Marker, MarkerClickEvent, MarkerDragEvent, MercatorCoordinate, NavigationControl, Point, Popup, PopupEvent, RasterDEMTileSource, RasterTileSource, ScaleControl, ScrollZoomHandler, Style, TerrainControl, TwoFingersTouchPitchHandler, TwoFingersTouchRotateHandler, TwoFingersTouchZoomHandler, TwoFingersTouchZoomRotateHandler, VectorTileSource, VideoSource, addProtocol, addSourceType, clearPrewarmedResources, config, createTileMesh, getGlobalDispatcher, getMaxParallelImageRequests, getRTLTextPluginStatus, getVersion, getWorkerCount, getWorkerUrl, importScriptInWorkers, isTimeFrozen, now, prewarm, removeProtocol, restoreNow, setMaxParallelImageRequests, setNow, setRTLTextPlugin, setWorkerCount, setWorkerUrl };
 
-//# sourceMappingURL=maplibre-gl-compare.mjs.map
+//# sourceMappingURL=maplibre-gl-dev.mjs.map

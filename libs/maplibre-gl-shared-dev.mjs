@@ -1,6 +1,6 @@
 /**
 * MapLibre GL JS
-* @license 3-Clause BSD. Full text of license: https://github.com/maplibre/maplibre-gl-js/blob/v6.0.0-14/LICENSE.txt
+* @license 3-Clause BSD. Full text of license: https://github.com/maplibre/maplibre-gl-js/blob/v6.0.0-17/LICENSE.txt
 */
 //#region \0rolldown/runtime.js
 var __create$1 = Object.create;
@@ -3068,15 +3068,6 @@ var Evented = class {
 		_removeEventListener(type, listener, this._oneTimeListeners);
 		return this;
 	}
-	/**
-	* Adds a listener that will be called only once to a specified event type.
-	*
-	* The listener will be called first time the event fires after the listener is registered.
-	*
-	* @param type - The event type to listen for.
-	* @param listener - The function to be called when the event is fired the first time.
-	* @returns `this` or a promise if a listener is not provided
-	*/
 	once(type, listener) {
 		if (!listener) return new Promise((resolve) => this.once(type, resolve));
 		this._oneTimeListeners ||= {};
@@ -12681,6 +12672,7 @@ function serialize(input, transferables) {
 			if (!input.hasOwnProperty(key)) continue;
 			if (registry[classRegistryKey].omit.includes(key)) continue;
 			const property = input[key];
+			if (property === void 0) continue;
 			properties[key] = registry[classRegistryKey].shallow.includes(key) ? property : serialize(property, transferables);
 		}
 		if (input instanceof Error) properties.message = input.message;
@@ -24310,6 +24302,7 @@ var Actor = class {
 					sourceMapId: this.mapId
 				};
 				this.target.postMessage(cancelMessage);
+				reject(new AbortError(abortController.signal.reason));
 			}, addEventDefaultOptions) : null;
 			this.resolveRejects[id] = {
 				resolve: (value) => {

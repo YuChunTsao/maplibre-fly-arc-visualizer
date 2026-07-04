@@ -164,6 +164,18 @@ export function buildUI(
     })
   );
   panel.appendChild(
+    optParamRow('maxDuration (ms)', params.maxDuration, (v) => {
+      params.maxDuration = v;
+      notify();
+    })
+  );
+  panel.appendChild(
+    optParamRow('duration (ms)', params.duration, (v) => {
+      params.duration = v;
+      notify();
+    })
+  );
+  panel.appendChild(
     paramRow('curve', params.curve, (v) => {
       params.curve = v;
       notify();

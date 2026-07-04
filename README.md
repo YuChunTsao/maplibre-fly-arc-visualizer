@@ -37,8 +37,11 @@ Steps to use a local MapLibre dev build for Version B (optional):
    npm run build-dist
 2. Copy all required output files into this repo's `libs/` directory (all three files are required):
    cp dist/maplibre-gl-dev.mjs ../maplibre-fly-arc-visualizer/libs/maplibre-gl-compare.mjs
+   cp dist/maplibre-gl-dev.mjs.map ../maplibre-fly-arc-visualizer/libs/maplibre-gl-compare.mjs.map
    cp dist/maplibre-gl-shared-dev.mjs ../maplibre-fly-arc-visualizer/libs/
    cp dist/maplibre-gl-worker-dev.mjs ../maplibre-fly-arc-visualizer/libs/
+   cp dist/maplibre-gl-shared-dev.mjs.map ../maplibre-fly-arc-visualizer/libs/
+   cp dist/maplibre-gl-worker-dev.mjs.map ../maplibre-fly-arc-visualizer/libs/
 3. Restart the dev server and use the UI Run button. The playground will show A = official npm package, B = your local dev build.
 
 ## Key files
