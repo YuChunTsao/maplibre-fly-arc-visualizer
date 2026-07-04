@@ -1,6 +1,6 @@
 /**
 * MapLibre GL JS
-* @license 3-Clause BSD. Full text of license: https://github.com/maplibre/maplibre-gl-js/blob/v6.0.0-14/LICENSE.txt
+* @license 3-Clause BSD. Full text of license: https://github.com/maplibre/maplibre-gl-js/blob/v6.0.0-17/LICENSE.txt
 */
 import { $ as GeoJSONVT, En as removeProtocol, Fr as EXTENT, K as potpack, Kt as EvaluationParameters, L as SymbolBucket, M as createStyleLayer, Mt as CollisionBoxArray, Ni as Point, Q as LineBucket, Qn as extend, Sn as makeRequest, W as ImageAtlas, Xn as ensureError, Xt as register, Y as PbfReader, _ as OverscaledTileID, _t as AlphaImage, at as FillBucket, c as FeatureIndex, cn as featureFilter, d as DictionaryCoder, dr as isWorker, dt as DEMData, i as clipGeometry, in as createExpression, ir as getImageData, j as Actor, jn as JSON_PREFIX, jr as warnOnce, kn as isAbortError, l as MLTVectorTile, ln as groupByLayout, m as fromVectorTileJs, n as performSymbolLayout, nt as FillExtrusionBucket, o as BoundedLRUCache, or as isImageBitmap, p as GeoJSONWrapper, pr as mapObject, qt as rtlWorkerPlugin, rt as VectorTile, vn as getArrayBuffer, vt as RGBAImage, wn as addProtocol, yn as getJSON } from "./maplibre-gl-shared-dev.mjs";
 //#region src/style/style_layer_index.ts
@@ -284,16 +284,13 @@ var WorkerTileState = class {
 		tile.abort.abort();
 		delete this.loading[uid];
 	}
+	getParsing(uid) {
+		return this.parsing[uid];
+	}
 	setParsing(uid, state) {
 		this.parsing[uid] = state;
 	}
-	consumeParsing(uid) {
-		const state = this.parsing[uid];
-		if (!state) return void 0;
-		delete this.parsing[uid];
-		return state;
-	}
-	clearParsing(uid) {
+	removeParsing(uid) {
 		delete this.parsing[uid];
 	}
 	markLoaded(uid, tile) {
@@ -466,7 +463,7 @@ var VectorTileWorkerSource = class {
 			try {
 				return await this._parseWorkerTile(workerTile, params, parseState);
 			} finally {
-				this.tileState.clearParsing(uid);
+				this.tileState.removeParsing(uid);
 			}
 		} catch (err) {
 			this.tileState.finishLoading(uid);
@@ -542,8 +539,12 @@ var VectorTileWorkerSource = class {
 		if (!workerTile) throw new Error("Should not be trying to reload a tile that was never loaded or has been removed");
 		workerTile.showCollisionBoxes = params.showCollisionBoxes;
 		if (workerTile.status === "parsing") {
-			const parseState = this.tileState.consumeParsing(uid);
-			return await this._parseWorkerTile(workerTile, params, parseState);
+			const parseState = this.tileState.getParsing(uid);
+			try {
+				return await this._parseWorkerTile(workerTile, params, parseState);
+			} finally {
+				this.tileState.removeParsing(uid);
+			}
 		}
 		if (workerTile.status === "done" && workerTile.vectorTile) return await this._parseWorkerTile(workerTile, params);
 	}
@@ -636,7 +637,7 @@ var GeoJSONWorkerSource = class {
 			try {
 				return await this._parseWorkerTile(workerTile, params, parseState);
 			} finally {
-				this.tileState.clearParsing(uid);
+				this.tileState.removeParsing(uid);
 			}
 		} catch (err) {
 			workerTile.status = "done";
@@ -650,8 +651,12 @@ var GeoJSONWorkerSource = class {
 		if (!workerTile) throw new Error("Should not be trying to reload a tile that was never loaded or has been removed");
 		workerTile.showCollisionBoxes = params.showCollisionBoxes;
 		if (workerTile.status === "parsing") {
-			const parseState = this.tileState.consumeParsing(uid);
-			return await this._parseWorkerTile(workerTile, params, parseState);
+			const parseState = this.tileState.getParsing(uid);
+			try {
+				return await this._parseWorkerTile(workerTile, params, parseState);
+			} finally {
+				this.tileState.removeParsing(uid);
+			}
 		}
 		if (workerTile.status === "done" && workerTile.vectorTile) return await this._parseWorkerTile(workerTile, params);
 	}
